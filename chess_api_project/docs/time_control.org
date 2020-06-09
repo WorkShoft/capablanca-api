@@ -1,0 +1,2 @@
+* FIDE time control
+  There is a single time control for all major FIDE events: 90 minutes for the first 40 moves followed by 30 minutes for the rest of the game with an addition of 30 seconds per move starting from move one.
