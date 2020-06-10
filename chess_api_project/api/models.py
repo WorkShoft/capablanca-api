@@ -132,7 +132,7 @@ class Game(Model):
         related_name='blacks_player',
     )
     start_timestamp = DateTimeField(auto_now_add=True)
-    end_timestamp = DateTimeField()
+    end_timestamp = DateTimeField(null=True)
     result = ForeignKey(
         Result,
         on_delete=CASCADE,
