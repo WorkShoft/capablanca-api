@@ -20,6 +20,7 @@ class Player(Model):
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
+        null=True,  # guest -> not a registered user
     )
     uuid = UUIDField(default=uuid.uuid4)
 
