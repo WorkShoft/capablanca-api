@@ -124,7 +124,7 @@ class Piece(Model):
 
 
 class Game(Model):
-    uuid = UUIDField(default=uuid.uuid4)
+    uuid = UUIDField(default=uuid.uuid4, primary_key=True)
     whites_player = ForeignKey(
         Player,
         on_delete=CASCADE,
