@@ -16,6 +16,7 @@ class Player(Model):
     elo = ForeignKey(
         Elo,
         on_delete=CASCADE,
+        null=True
     )
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
