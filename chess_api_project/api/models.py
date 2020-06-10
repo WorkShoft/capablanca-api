@@ -63,6 +63,7 @@ class Result(Model):
 
     description = TextField(
         choices=RESULT_CHOICES,
+        default=IN_PROGRESS
     )
 
     def __str__(self):
@@ -70,7 +71,8 @@ class Result(Model):
 
 
 class Board(Model):
-    layout = TextField()
+    layout = TextField(
+        default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     updated_at = DateTimeField(auto_now=True)
 
     def __str__(self):
