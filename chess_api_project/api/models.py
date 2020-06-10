@@ -69,7 +69,7 @@ class Result(Model):
 
 
 class Board(Model):
-    layout = CharField(max_length=127)
+    layout = TextField()
     updated_at = DateTimeField(auto_now=True)
 
     def __str__(self):
