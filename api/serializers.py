@@ -1,3 +1,4 @@
+import uuid
 import chess
 from rest_framework import serializers
 
@@ -7,7 +8,7 @@ from .models import Game, Result, Board, Player
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = ('layout', 'updated_at',)
+        fields = ('fen', 'updated_at', 'game_uuid')
 
 
 class ResultSerializer(serializers.ModelSerializer):
@@ -20,7 +21,7 @@ class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
 
-        fields = ('guest', 'elo', 'user', 'uuid',)
+        fields = ('user', 'uuid',)
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -37,6 +38,8 @@ class GameSerializer(serializers.ModelSerializer):
                   )
 
     def create(self, validated_data):
+        #user = self.context['request'].user
+
         board_data = validated_data.pop('board', {})
         result_data = validated_data.pop('result', {})
         blacks_player_data = validated_data.pop('blacks_player', {})
@@ -45,9 +48,12 @@ class GameSerializer(serializers.ModelSerializer):
         blacks_player_object = Player.objects.create(**blacks_player_data)
         whites_player_object = Player.objects.create(**whites_player_data)
 
+        game_uuid = uuid.uuid4()
+
         game_board = chess.Board()
-        layout = str(game_board)
-        board_object = Board.objects.create(**board_data, layout=layout)
+        fen = game_board.fen()
+        board_object = Board.objects.create(
+            **board_data, fen=fen, game_uuid=game_uuid)
 
         result_object = Result.objects.create(
             **result_data, description=Result.IN_PROGRESS)
@@ -57,7 +63,8 @@ class GameSerializer(serializers.ModelSerializer):
             board=board_object,
             blacks_player=blacks_player_object,
             whites_player=whites_player_object,
-            **validated_data
+            uuid=game_uuid,
+            ** validated_data
         )
 
         return game

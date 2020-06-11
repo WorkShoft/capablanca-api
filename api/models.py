@@ -1,21 +1,19 @@
 import chess
 import uuid
-from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, ForeignKey, CASCADE
+from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, OneToOneField, ForeignKey, CASCADE
 from django.conf import settings
 
 
-class Player(Model):
-    guest = BooleanField(default=True)
-
-    user = ForeignKey(
+class Player(Model):    
+    user = OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
-        null=True,  # guest -> not a registered user
+        null=True, 
     )
     uuid = UUIDField(default=uuid.uuid4)
 
     def __str__(self):
-        return f'Guest #{uuid}' if guest else user
+        return f'{self.user} {self.uuid}'
 
 
 class Elo(Model):
@@ -98,6 +96,9 @@ class Result(Model):
 
 
 class Board(Model):
+    BLACK_PIECES = ['q', 'k', 'b', 'n', 'r', 'p']
+    WHITE_PIECES = [p.upper() for p in BLACK_PIECES]
+    
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     updated_at = DateTimeField(auto_now=True)
@@ -111,9 +112,12 @@ class Board(Model):
         legal_moves = board.legal_moves
 
         requested_move = chess.Move.from_uci(f"{from_square}{to_square}")
+        
         if requested_move in board.legal_moves:
-            board.push(next_move)
+            board.push(requested_move)
             self.fen = board.fen()
+            self.save()
+            return requested_move
 
 
 class Piece(Model):
@@ -178,13 +182,13 @@ class Game(Model):
         Result,
         on_delete=CASCADE,
     )
-    board = ForeignKey(
+    board = OneToOneField(
         Board,
         on_delete=CASCADE,
     )
 
 
-class Move(Model):
+class Move(Model):    
     timestamp = DateTimeField(auto_now_add=True)
     piece = ForeignKey(
         Piece,

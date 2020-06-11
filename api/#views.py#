@@ -55,7 +55,7 @@ class MovePiece(generics.UpdateAPIView):
         piece = self.board.piece_at(square)
         piece_symbol = str(piece)
 
-        # Check piece color (Board.BLACK_PIECES / Board.WHITE_PIECES)
+        # Check piece color (piece_symbol in Board.BLACK_PIECES / Board.WHITE_PIECES)
         # Check if player is whites_player or blacks_player
         # return True or False
         
