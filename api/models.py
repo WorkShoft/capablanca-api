@@ -3,6 +3,20 @@ from django.db.models import Model, IntegerField, CharField, TextField, DateTime
 from django.conf import settings
 
 
+class Player(Model):
+    guest = BooleanField(default=True)
+
+    user = ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=CASCADE,
+        null=True,  # guest -> not a registered user
+    )
+    uuid = UUIDField(default=uuid.uuid4)
+
+    def __str__(self):
+        return f'Guest #{uuid}' if guest else user
+
+
 class Elo(Model):
     """
     https://en.wikipedia.org/wiki/Elo_rating_system#Mathematical_details
@@ -16,7 +30,7 @@ class Elo(Model):
     updated_at = DateTimeField(auto_now=True)
 
     player = ForeignKey(
-        settings.AUTH_USER_MODEL,
+        Player,
         on_delete=CASCADE,
         null=True
     )
@@ -39,20 +53,6 @@ class Elo(Model):
         self.rating = round(self.rating + self.k_factor *
                             (score - expected_score))
         self.save()
-
-
-class Player(Model):
-    guest = BooleanField(default=True)
-
-    user = ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=CASCADE,
-        null=True,  # guest -> not a registered user
-    )
-    uuid = UUIDField(default=uuid.uuid4)
-
-    def __str__(self):
-        return f'Guest #{uuid}' if guest else user
 
 
 class Result(Model):
