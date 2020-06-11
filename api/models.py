@@ -101,6 +101,7 @@ class Board(Model):
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     updated_at = DateTimeField(auto_now=True)
+    game_uuid = UUIDField(default=uuid.uuid4)
 
     def __str__(self):
         return self.fen
