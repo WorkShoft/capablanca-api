@@ -25,10 +25,13 @@ class Elo(Model):
     def update_rating(self, score, opponent_rating):
         """
         https://wikimedia.org/api/rest_v1/media/math/render/svg/09a11111b433582eccbb22c740486264549d1129
+
+        Update rating after a single game (i.e score should be either 0, 0.5 or 1)
         """
 
         expected_score = self._get_expected_score(opponent_rating)
-        self.rating = self.rating + self.k_factor * (score - expected_score)
+        self.rating = round(self.rating + self.k_factor *
+                            (score - expected_score))
         self.save()
 
 
