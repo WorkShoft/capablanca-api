@@ -4,11 +4,27 @@ from django.conf import settings
 
 
 class Elo(Model):
-    rating = IntegerField(default=0)
+    """
+    https://en.wikipedia.org/wiki/Elo_rating_system#Mathematical_details
+    """
+
+    rating = IntegerField(default=1200)
+    k_factor = IntegerField(default=32)
     wins = IntegerField(default=0)
     losses = IntegerField(default=0)
     draws = IntegerField(default=0)
     updated_at = DateTimeField(auto_now=True)
+
+    def _get_expected_score(self, opponent_rating):
+        """
+        https://wikimedia.org/api/rest_v1/media/math/render/svg/51346e1c65f857c0025647173ae48ddac904adcb
+        """
+        return 1 / (1 + 10**((opponent_rating - rating) / 400))
+
+    def update_rating(self, score, opponent_rating):
+        expected_score = self._get_expected_score(opponent_rating)
+        rating = rating + k_factor * (score - expected_score)
+        self.save()
 
 
 class Player(Model):
