@@ -15,6 +15,12 @@ class Elo(Model):
     draws = IntegerField(default=0)
     updated_at = DateTimeField(auto_now=True)
 
+    player = ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=CASCADE,
+        null=True
+    )
+
     def _get_expected_score(self, opponent_rating):
         """
         https://wikimedia.org/api/rest_v1/media/math/render/svg/51346e1c65f857c0025647173ae48ddac904adcb
@@ -37,11 +43,7 @@ class Elo(Model):
 
 class Player(Model):
     guest = BooleanField(default=True)
-    elo = ForeignKey(
-        Elo,
-        on_delete=CASCADE,
-        null=True
-    )
+
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
