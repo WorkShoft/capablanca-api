@@ -1,3 +1,4 @@
+import chess
 import uuid
 from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, ForeignKey, CASCADE
 from django.conf import settings
@@ -97,12 +98,21 @@ class Result(Model):
 
 
 class Board(Model):
-    layout = TextField(
+    fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     updated_at = DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.layout
+        return self.fen
+
+    def move(self, from_square, to_square):
+        board = chess.Board(self.fen)
+        legal_moves = board.legal_moves
+
+        requested_move = chess.Move.from_uci(f"{from_square}{to_square}")
+        if requested_move in board.legal_moves:
+            board.push(next_move)
+            self.fen = board.fen()
 
 
 class Piece(Model):
