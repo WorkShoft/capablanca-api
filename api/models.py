@@ -19,11 +19,16 @@ class Elo(Model):
         """
         https://wikimedia.org/api/rest_v1/media/math/render/svg/51346e1c65f857c0025647173ae48ddac904adcb
         """
-        return 1 / (1 + 10**((opponent_rating - rating) / 400))
+
+        return 1 / (1 + 10**((opponent_rating - self.rating) / 400))
 
     def update_rating(self, score, opponent_rating):
+        """
+        https://wikimedia.org/api/rest_v1/media/math/render/svg/09a11111b433582eccbb22c740486264549d1129
+        """
+
         expected_score = self._get_expected_score(opponent_rating)
-        rating = rating + k_factor * (score - expected_score)
+        self.rating = self.rating + self.k_factor * (score - expected_score)
         self.save()
 
 
