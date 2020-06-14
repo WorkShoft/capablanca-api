@@ -1,18 +1,17 @@
 import uuid
-import chess
 
+import chess
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import Game, Result, Board
-
-from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('username', 'active',)
+
 
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,14 +35,16 @@ class GameSerializer(serializers.ModelSerializer):
         model = Game
         fields = (
             'uuid', 'blacks_player', 'whites_player',
-            'start_timestamp', 'end_timestamp',
-            'board', 'result', 
+            'created_at', 'started_at', 'finished_at',
+            'board', 'result',
         )
 
-        
     def create(self, validated_data):
         board_data = validated_data.pop('board', {})
         result_data = validated_data.pop('result', {})
+
+        preferred_color = self.context['request'].data.get(
+            'preferred_color', 'random')
 
         game_uuid = uuid.uuid4()
 
@@ -63,7 +64,7 @@ class GameSerializer(serializers.ModelSerializer):
         )
 
         auth_username = self.context['request'].user
-       
-        game.assign_color(auth_username, 'random')
+
+        game.assign_color(auth_username, preferred_color)
 
         return game
