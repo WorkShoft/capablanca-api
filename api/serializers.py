@@ -1,9 +1,18 @@
 import uuid
 import chess
+
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Game, Result, Board, Player
+from .models import Game, Result, Board
 
+from django.conf import settings
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'active',)
 
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,36 +26,24 @@ class ResultSerializer(serializers.ModelSerializer):
         fields = ('description',)
 
 
-class PlayerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Player
-
-        fields = ('user', 'uuid',)
-
-
 class GameSerializer(serializers.ModelSerializer):
-    blacks_player = PlayerSerializer(required=False)
-    whites_player = PlayerSerializer(required=False)
+    blacks_player = UserSerializer(required=False)
+    whites_player = UserSerializer(required=False)
     board = BoardSerializer(required=False)
     result = ResultSerializer(required=False)
 
     class Meta:
         model = Game
-        fields = ('uuid', 'blacks_player', 'whites_player',
-                  'start_timestamp', 'end_timestamp',
-                  'board', 'result',
-                  )
+        fields = (
+            'uuid', 'blacks_player', 'whites_player',
+            'start_timestamp', 'end_timestamp',
+            'board', 'result', 
+        )
 
+        
     def create(self, validated_data):
-        #user = self.context['request'].user
-
         board_data = validated_data.pop('board', {})
         result_data = validated_data.pop('result', {})
-        blacks_player_data = validated_data.pop('blacks_player', {})
-        whites_player_data = validated_data.pop('whites_player', {})
-
-        blacks_player_object = Player.objects.create(**blacks_player_data)
-        whites_player_object = Player.objects.create(**whites_player_data)
 
         game_uuid = uuid.uuid4()
 
@@ -61,10 +58,12 @@ class GameSerializer(serializers.ModelSerializer):
         game = Game.objects.create(
             result=result_object,
             board=board_object,
-            blacks_player=blacks_player_object,
-            whites_player=whites_player_object,
             uuid=game_uuid,
-            ** validated_data
+            **validated_data
         )
+
+        auth_username = self.context['request'].user
+       
+        game.assign_color(auth_username, 'random')
 
         return game

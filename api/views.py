@@ -2,8 +2,10 @@ import chess
 from rest_framework import generics, mixins, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import Game, Player
-from .serializers import GameSerializer, PlayerSerializer, BoardSerializer
+from django.conf import settings
+
+from .models import Game
+from .serializers import GameSerializer, BoardSerializer, UserSerializer
 
 
 class CreateGame(mixins.RetrieveModelMixin, generics.CreateAPIView):
@@ -14,10 +16,6 @@ class CreateGame(mixins.RetrieveModelMixin, generics.CreateAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
-
-
-class CreatePlayer(generics.CreateAPIView):
-    serializer_class = PlayerSerializer
 
 
 class MovePiece(generics.UpdateAPIView):

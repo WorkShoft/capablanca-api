@@ -1,19 +1,11 @@
 import chess
 import uuid
+import random
+
+from django.contrib.auth import get_user_model
 from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, OneToOneField, ForeignKey, CASCADE
 from django.conf import settings
 
-
-class Player(Model):    
-    user = OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=CASCADE,
-        null=True, 
-    )
-    uuid = UUIDField(default=uuid.uuid4)
-
-    def __str__(self):
-        return f'{self.user} {self.uuid}'
 
 
 class Elo(Model):
@@ -29,7 +21,7 @@ class Elo(Model):
     updated_at = DateTimeField(auto_now=True)
 
     player = ForeignKey(
-        Player,
+        settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
         null=True
     )
@@ -167,17 +159,20 @@ class Piece(Model):
 class Game(Model):
     uuid = UUIDField(default=uuid.uuid4, primary_key=True)
     whites_player = ForeignKey(
-        Player,
+        settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
         related_name='whites_player',
+        null=True,
     )
     blacks_player = ForeignKey(
-        Player,
+        settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
         related_name='blacks_player',
+        null=True,
     )
-    start_timestamp = DateTimeField(auto_now_add=True)
-    end_timestamp = DateTimeField(null=True)
+    created_at = DateTimeField(auto_now_add=True)
+    started_at = DateTimeField(null=True)
+    finished_at = DateTimeField(null=True)
     result = ForeignKey(
         Result,
         on_delete=CASCADE,
@@ -186,6 +181,42 @@ class Game(Model):
         Board,
         on_delete=CASCADE,
     )
+
+
+    def assign_color(self, username, preferred_color='white'):
+        colors = {
+            'white': self.whites_player,
+            'black': self.blacks_player,            
+        }
+
+        player_color = 'white'
+
+        if self.whites_player and self.blacks_player:
+            return 'full'
+
+        elif self.whites_player or self.blacks_player:
+            player_color = 'white' if self.blacks_player else 'black'
+
+        elif not self.whites_player and not self.blacks_player:
+            player_color = preferred_color
+            
+            if preferred_color == 'random':
+                player_color = 'black' if random.randint(0, 1) == 1 else 'white'                
+                
+        User = get_user_model()
+        auth_user = User.objects.get(username=username)        
+
+        if player_color == 'black':
+            self.blacks_player = auth_user
+
+        else:
+            self.whites_player = auth_user
+        
+        self.save()
+
+        return player_color
+    
+
 
 
 class Move(Model):    
@@ -237,7 +268,7 @@ class Claim(Model):
 
 class ClaimItem(Model):
     player = ForeignKey(
-        Player,
+        settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
     )
     timestamp = DateTimeField(auto_now_add=True)
