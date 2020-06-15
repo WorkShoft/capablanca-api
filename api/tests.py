@@ -39,6 +39,31 @@ class TestAPI(APITestCase):
         
         return join_request
 
+
+    def test_can_create_game(self):
+        """
+        Create a game
+        """
+
+        game_request = self._create_game()
+        response = self.create_view(game_request)
+
+        self.assertIn("board", response.data)
+        
+    def test_can_retrieve_game(self):
+        """
+        Retrieve a game
+        """
+        game_request = self._create_game()
+        create_response = self.create_view(game_request)
+
+        get_request = factory.get("/chess/game/?uuid={uuid}".format(uuid=create_response.data.get("uuid")), format="json")
+        force_authenticate(get_request, user=self.user_one)
+
+        get_response = self.create_view(get_request)
+
+        self.assertEqual(create_response.data.get('uuid'), get_response.data.get("uuid"))
+        
     def test_can_join_game(self):
         """
         Test second user is able to join the game
@@ -53,16 +78,6 @@ class TestAPI(APITestCase):
 
         self.assertEqual(self.user_two.username, response.data.get(
             "blacks_player", {}).get("username"))
-
-    def test_game_creation(self):
-        """
-        Create a game
-        """
-
-        game_request = self._create_game()
-        response = self.create_view(game_request)
-
-        self.assertIn("board", response.data)
 
     def test_players_can_move_their_pieces(self):
         game_request = self._create_game(preferred_color="white")
@@ -99,7 +114,69 @@ class TestAPI(APITestCase):
 
         response_blacks = self.move_piece_view(request_blacks)
 
-        print(response_blacks.data)
-
         self.assertIn("uuid", response_whites.data)
         self.assertIn("uuid", response_blacks.data)
+
+    def test_players_can_only_move_pieces_they_own(self):
+        game_request = self._create_game(preferred_color="white")
+        response = self.create_view(game_request)
+        
+        # Attempt to move a black pawn as a white player
+        move = {
+            "uuid": response.data.get("uuid"),
+            "from_square": "e7",
+            "to_square": "e5",
+        }
+
+        request = factory.put(
+            "/chess/game/move/", move, format="json")
+        force_authenticate(request, user=self.user_one)
+
+        response = self.move_piece_view(request)
+
+        self.assertIn("message", response.data)
+        self.assertEqual("You can\'t move a piece at that square", response.data["message"])
+
+    def test_only_valid_moves_are_allowed(self):        
+        game_request = self._create_game(preferred_color="white")
+        response = self.create_view(game_request)
+
+        # Attempt an illegal move
+        move = {
+            "uuid": response.data.get("uuid"),
+            "from_square": "e2",
+            "to_square": "e6",
+        }
+        
+        request = factory.put(
+            "/chess/game/move/", move, format="json")
+        force_authenticate(request, user=self.user_one)
+
+        response = self.move_piece_view(request)
+        self.assertIn('message', response.data)
+        self.assertEqual("{from_square}{to_square} is not a valid move.".format(
+            from_square=move["from_square"], to_square=move["to_square"]
+        ), response.data["message"])
+
+    def test_non_player_users_cant_play(self):
+        game_request = self._create_game(preferred_color="white")
+        response = self.create_view(game_request)
+
+        # Attempt to move a black pawn before joining the game
+        move = {
+            "uuid": response.data.get("uuid"),
+            "from_square": "e5",
+            "to_square": "e7",
+        }
+
+        request = factory.put(
+            "/chess/game/move/", move, format="json")
+
+        force_authenticate(request, user=self.user_two)
+        response = self.move_piece_view(request)
+        
+
+        self.assertIn("message", response.data)
+        self.assertEqual("You can\'t move a piece at that square", response.data["message"])
+        
+        

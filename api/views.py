@@ -25,10 +25,6 @@ class CreateGame(mixins.RetrieveModelMixin, generics.CreateAPIView):
 class MovePiece(generics.UpdateAPIView):
     serializer_class = GameSerializer
 
-    def get_queryset(self, request, *args, **kwargs):
-        game_uuid = request.data.get('uuid')
-        return get_object_or_404(Board, game_uuid=game_uuid)
-
     def update(self, request, *args, **kwargs):
         from_square = request.data.get('from_square')
         to_square = request.data.get('to_square')
