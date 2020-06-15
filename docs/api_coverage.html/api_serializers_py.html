@@ -69,13 +69,13 @@
     <p id="t16" class="run"><span class="n"><a href="#t16">16</a></span><span class="t"><span class="key">class</span> <span class="nam">BoardSerializer</span><span class="op">(</span><span class="nam">serializers</span><span class="op">.</span><span class="nam">ModelSerializer</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t17" class="run"><span class="n"><a href="#t17">17</a></span><span class="t">    <span class="key">class</span> <span class="nam">Meta</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t18" class="run"><span class="n"><a href="#t18">18</a></span><span class="t">        <span class="nam">model</span> <span class="op">=</span> <span class="nam">Board</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t19" class="run"><span class="n"><a href="#t19">19</a></span><span class="t">        <span class="nam">fields</span> <span class="op">=</span> <span class="op">(</span><span class="str">'fen'</span><span class="op">,</span> <span class="str">'updated_at'</span><span class="op">,</span> <span class="str">'game_uuid'</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t19" class="run"><span class="n"><a href="#t19">19</a></span><span class="t">        <span class="nam">fields</span> <span class="op">=</span> <span class="op">(</span><span class="str">'fen'</span><span class="op">,</span> <span class="str">'updated_at'</span><span class="op">,</span> <span class="str">'game_uuid'</span><span class="op">,</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t20" class="pln"><span class="n"><a href="#t20">20</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t21" class="pln"><span class="n"><a href="#t21">21</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t22" class="run"><span class="n"><a href="#t22">22</a></span><span class="t"><span class="key">class</span> <span class="nam">ResultSerializer</span><span class="op">(</span><span class="nam">serializers</span><span class="op">.</span><span class="nam">ModelSerializer</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t23" class="run"><span class="n"><a href="#t23">23</a></span><span class="t">    <span class="key">class</span> <span class="nam">Meta</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t24" class="run"><span class="n"><a href="#t24">24</a></span><span class="t">        <span class="nam">model</span> <span class="op">=</span> <span class="nam">Result</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t25" class="run"><span class="n"><a href="#t25">25</a></span><span class="t">        <span class="nam">fields</span> <span class="op">=</span> <span class="op">(</span><span class="str">'description'</span><span class="op">,</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t25" class="run"><span class="n"><a href="#t25">25</a></span><span class="t">        <span class="nam">fields</span> <span class="op">=</span> <span class="op">(</span><span class="str">'result'</span><span class="op">,</span> <span class="str">'termination'</span><span class="op">,</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t26" class="pln"><span class="n"><a href="#t26">26</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t27" class="pln"><span class="n"><a href="#t27">27</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t28" class="run"><span class="n"><a href="#t28">28</a></span><span class="t"><span class="key">class</span> <span class="nam">GameSerializer</span><span class="op">(</span><span class="nam">serializers</span><span class="op">.</span><span class="nam">ModelSerializer</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -107,7 +107,7 @@
     <p id="t54" class="pln"><span class="n"><a href="#t54">54</a></span><span class="t">            <span class="op">**</span><span class="nam">board_data</span><span class="op">,</span> <span class="nam">fen</span><span class="op">=</span><span class="nam">fen</span><span class="op">,</span> <span class="nam">game_uuid</span><span class="op">=</span><span class="nam">game_uuid</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t55" class="pln"><span class="n"><a href="#t55">55</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t56" class="run"><span class="n"><a href="#t56">56</a></span><span class="t">        <span class="nam">result_object</span> <span class="op">=</span> <span class="nam">Result</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">create</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t57" class="pln"><span class="n"><a href="#t57">57</a></span><span class="t">            <span class="op">**</span><span class="nam">result_data</span><span class="op">,</span> <span class="nam">description</span><span class="op">=</span><span class="nam">Result</span><span class="op">.</span><span class="nam">IN_PROGRESS</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t57" class="pln"><span class="n"><a href="#t57">57</a></span><span class="t">            <span class="op">**</span><span class="nam">result_data</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t58" class="pln"><span class="n"><a href="#t58">58</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t59" class="run"><span class="n"><a href="#t59">59</a></span><span class="t">        <span class="nam">game</span> <span class="op">=</span> <span class="nam">Game</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">create</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p id="t60" class="pln"><span class="n"><a href="#t60">60</a></span><span class="t">            <span class="nam">result</span><span class="op">=</span><span class="nam">result_object</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -126,7 +126,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.1</a>,
-            created at 2020-06-15 09:35
+            created at 2020-06-15 21:23
         </p>
     </div>
 </div>

@@ -47,44 +47,58 @@ class Elo(Model):
 
 
 class Result(Model):
-    SCHEDULED = 'Scheduled'
-    POSTPONED = 'Postponed'
-    FINISHED_NO_MOVES = 'Finished (no moves)'
-    IN_PROGRESS = 'In progress'
-    ADJOURNED = 'Adjourned'
-    FINISHED_BASIC_RULES = 'Finished (basic rules)'
-    FINISHED_CLOCK = 'Finished (clock)'
-    DRAW = 'Draw'
-    FINISHED_BREACH = 'Finished (breach)'
-    FINISHED_COMPLIANCE = 'Finished (compliance)'
-    TBD = 'TBD'
-    ABANDONED = 'Abandoned'
-    UNKNOWN = 'Unknown'
+    """
+    Holds result and termination data following the PGN spec
+    result: declares the winner
+    termination: gives additional data about the result
+    http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c9.8.1
+    """
+
+    # RESULT
+    WHITE_WINS = "White wins"
+    BLACK_WINS = "Black wins"
+    DRAW = "Draw"
+    IN_PROGRESS = "In progress"
+           
+    # TERMINATION
+    ABANDONED = "Abandoned"
+    ADJUDICATION = "Adjudication"
+    DEATH = "Death"
+    EMERGENCY = "Emergency"
+    NORMAL = "Normal"
+    RULES_INFRACTION = "Rules infraction"
+    TIME_FORFEIT = "Time forfeit"
+    UNTERMINATED = "Unterminated"
 
     RESULT_CHOICES = [
-        (SCHEDULED, 'Scheduled'),
-        (POSTPONED, 'Postponed'),
-        (FINISHED_NO_MOVES, 'Finished without any moves played'),
-        (IN_PROGRESS, 'In progress'),
-        (ADJOURNED, 'Adjourned'),
-        (FINISHED_BASIC_RULES, 'Finished according to the Basic Rules of Play'),
-        (FINISHED_CLOCK, 'Finished by the clock'),
-        (DRAW, 'Draw'),
-        (FINISHED_BREACH, 'Finished because of a breach of rules of one player'),
-        (FINISHED_COMPLIANCE,
-         'Finished because both players persistently refuse to comply with the laws of chess'),
-        (TBD, 'To be decided'),
-        (ABANDONED, 'Abandoned'),
-        (UNKNOWN, 'Unknown'),
+        (WHITE_WINS, "White wins"),
+        (BLACK_WINS, "Black wins"),
+        (DRAW, "Drawn game"),
+        (IN_PROGRESS, "Game still in progress, game abandoned, or result otherwise unknown"),
+    ]
+    
+    TERMINATION_CHOICES = [
+        (ABANDONED, "Abandoned game."),
+        (ADJUDICATION, "Result due to third party adjudication process."),
+        (DEATH, "One or both players died during the course of this game."),
+        (EMERGENCY, "Game concluded due to unforeseen circumstances."),
+        (NORMAL, "Game terminated in a normal fashion."),
+        (RULES_INFRACTION, "Administrative forfeit due to losing player's failure to observe either the Laws of Chess or the event regulations."),
+        (TIME_FORFEIT, "Loss due to losing player's failure to meet time control requirements."),
+        (UNTERMINATED, "Game not terminated."),        
     ]
 
-    description = TextField(
+    result = TextField(
         choices=RESULT_CHOICES,
-        default=IN_PROGRESS
+        default=IN_PROGRESS,
+    )
+    termination = TextField(
+        choices=TERMINATION_CHOICES,
+        default=UNTERMINATED,
     )
 
     def __str__(self):
-        return self.description
+        return self.result
 
 
 class Board(Model):
@@ -227,16 +241,16 @@ class Game(Model):
         Return True if the game is over, False if it is not
         """
         results_dict = {
-            '1-0': Result.FINISHED_BASIC_RULES,
+            '1-0': Result.WHITE_WINS,
             '1/2-1/2': Result.DRAW,
-            '0-1': Result.FINISHED_BASIC_RULES,
+            '0-1': Result.BLACK_WINS,
         }
         
         board = chess.Board(self.board.fen)
         
         if board.is_game_over():
             result_string = board.result()
-            self.result = Result(description=results_dict.get(result_string))
+            self.result = Result(result=results_dict.get(result_string), termination=Result.NORMAL)
             self.finished_at = timezone.now()
             self.result.save()
             self.save()

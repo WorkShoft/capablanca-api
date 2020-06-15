@@ -222,6 +222,7 @@ class TestAPI(APITestCase):
         game = Game.objects.get(uuid=game_uuid)
 
 
-        self.assertEqual(Result.FINISHED_BASIC_RULES, game.result.description)
+        self.assertEqual(Result.BLACK_WINS, game.result.result)
+        self.assertEqual(Result.NORMAL, game.result.termination)
         
         

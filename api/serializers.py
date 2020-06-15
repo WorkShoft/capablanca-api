@@ -16,13 +16,13 @@ class UserSerializer(serializers.ModelSerializer):
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = ('fen', 'updated_at', 'game_uuid')
+        fields = ('fen', 'updated_at', 'game_uuid',)
 
 
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = ('description',)
+        fields = ('result', 'termination',)
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -54,7 +54,7 @@ class GameSerializer(serializers.ModelSerializer):
             **board_data, fen=fen, game_uuid=game_uuid)
 
         result_object = Result.objects.create(
-            **result_data, description=Result.IN_PROGRESS)
+            **result_data)
 
         game = Game.objects.create(
             result=result_object,
