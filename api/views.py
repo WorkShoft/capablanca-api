@@ -55,15 +55,13 @@ class MovePiece(generics.UpdateAPIView):
         square = getattr(chess, from_square.upper())
         board = chess.Board(game.board.fen)
 
-        piece = board.piece_at(square)
-
         if user in (game.whites_player, game.blacks_player):
             player_color = 'white' if user == game.whites_player else 'black'
 
         else:
             return False
 
-        piece_color = 'white' if piece.color else 'black'
+        piece_color = 'white' if board.color_at(square) else 'black'
 
         return player_color == piece_color
 

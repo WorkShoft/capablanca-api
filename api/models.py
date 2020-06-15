@@ -173,7 +173,7 @@ class Game(Model):
     created_at = DateTimeField(auto_now_add=True)
     started_at = DateTimeField(null=True)
     finished_at = DateTimeField(null=True)
-    result = ForeignKey(
+    result = OneToOneField(
         Result,
         on_delete=CASCADE,
     )
