@@ -1,9 +1,13 @@
+import chess.pgn
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate, APITestCase
 
 from .views import CreateGame, MovePiece, JoinGame
+from .models import Game, Result
 from chess_api_project.users.models import User
+
 
 
 factory = APIRequestFactory()
@@ -178,5 +182,46 @@ class TestAPI(APITestCase):
 
         self.assertIn("message", response.data)
         self.assertEqual("You can\'t move a piece at that square", response.data["message"])
+        
+    def test_game_end(self):
+        moves = []
+
+        # Create board and game from PGN
+        with open("api/pgn_games/fools_mate.pgn") as f:                
+            game_pgn = chess.pgn.read_game(f)
+            board = game_pgn.board()
+            moves = [move for move in game_pgn.mainline_moves()]
+            
+        # Create game
+        game_request = self._create_game(preferred_color="white")
+        response = self.create_view(game_request)
+        game_uuid = response.data.get("uuid")
+
+        # Second player joins
+        join_request = self._join_game(response.data.get("uuid"), self.user_two,
+                        preferred_color="black")
+        self.join_game_view(join_request)
+
+        #Play all moves
+        for counter, move in enumerate(moves):
+            uci = move.uci()
+            move = {
+                "uuid": game_uuid,
+                "from_square": uci[0:2],
+                "to_square": uci[2:4],
+            }
+
+            request_move = factory.put(
+                "/chess/game/move/", move, format="json")
+
+            user = self.user_one if counter % 2 == 0 else self.user_two
+            force_authenticate(request_move, user=user)            
+                
+            response_move = self.move_piece_view(request_move)        
+
+        game = Game.objects.get(uuid=game_uuid)
+
+
+        self.assertEqual(Result.FINISHED_BASIC_RULES, game.result.description)
         
         

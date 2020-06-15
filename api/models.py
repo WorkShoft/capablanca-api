@@ -5,7 +5,7 @@ import random
 from django.contrib.auth import get_user_model
 from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, OneToOneField, ForeignKey, CASCADE
 from django.conf import settings
-
+from django.utils import timezone
 
 
 class Elo(Model):
@@ -100,15 +100,21 @@ class Board(Model):
         return self.fen
 
     def move(self, from_square, to_square):
+        """
+        Make a move if it is legal, and check if the game is over
+        """
         board = chess.Board(self.fen)
         legal_moves = board.legal_moves
-
+            
         requested_move = chess.Move.from_uci(f"{from_square}{to_square}")
         
         if requested_move in board.legal_moves:
             board.push(requested_move)
             self.fen = board.fen()
+
             self.save()
+            self.game.is_game_over()
+            
             return requested_move
 
 
@@ -182,7 +188,6 @@ class Game(Model):
         on_delete=CASCADE,
     )
 
-
     def assign_color(self, username, preferred_color='white'):
         colors = {
             'white': self.whites_player,
@@ -215,10 +220,31 @@ class Game(Model):
         self.save()
 
         return player_color
-    
 
+    def is_game_over(self):
+        """
+        Update the game if it is over
+        Return True if the game is over, False if it is not
+        """
+        results_dict = {
+            '1-0': Result.FINISHED_BASIC_RULES,
+            '1/2-1/2': Result.DRAW,
+            '0-1': Result.FINISHED_BASIC_RULES,
+        }
+        
+        board = chess.Board(self.board.fen)
+        
+        if board.is_game_over():
+            result_string = board.result()
+            self.result = Result(description=results_dict.get(result_string))
+            self.finished_at = timezone.now()
+            self.result.save()
+            self.save()
+            return True
 
+        return False
 
+        
 class Move(Model):    
     timestamp = DateTimeField(auto_now_add=True)
     piece = ForeignKey(
