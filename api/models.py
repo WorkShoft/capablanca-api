@@ -2,10 +2,8 @@ import chess
 import uuid
 import random
 
-from django.contrib.auth import get_user_model
 from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, OneToOneField, ForeignKey, CASCADE
 from django.conf import settings
-from django.utils import timezone
 
 
 class Elo(Model):
@@ -26,25 +24,6 @@ class Elo(Model):
         null=True
     )
 
-    def _get_expected_score(self, opponent_rating):
-        """
-        https://wikimedia.org/api/rest_v1/media/math/render/svg/51346e1c65f857c0025647173ae48ddac904adcb
-        """
-
-        return 1 / (1 + 10**((opponent_rating - self.rating) / 400))
-
-    def update_rating(self, score, opponent_rating):
-        """
-        https://wikimedia.org/api/rest_v1/media/math/render/svg/09a11111b433582eccbb22c740486264549d1129
-
-        Update rating after a single game (i.e score should be either 0, 0.5 or 1)
-        """
-
-        expected_score = self._get_expected_score(opponent_rating)
-        self.rating = round(self.rating + self.k_factor *
-                            (score - expected_score))
-        self.save()
-
 
 class Result(Model):
     """
@@ -59,7 +38,7 @@ class Result(Model):
     BLACK_WINS = "Black wins"
     DRAW = "Draw"
     IN_PROGRESS = "In progress"
-           
+
     # TERMINATION
     ABANDONED = "Abandoned"
     ADJUDICATION = "Adjudication"
@@ -76,7 +55,7 @@ class Result(Model):
         (DRAW, "Drawn game"),
         (IN_PROGRESS, "Game still in progress, game abandoned, or result otherwise unknown"),
     ]
-    
+
     TERMINATION_CHOICES = [
         (ABANDONED, "Abandoned game."),
         (ADJUDICATION, "Result due to third party adjudication process."),
@@ -85,7 +64,7 @@ class Result(Model):
         (NORMAL, "Game terminated in a normal fashion."),
         (RULES_INFRACTION, "Administrative forfeit due to losing player's failure to observe either the Laws of Chess or the event regulations."),
         (TIME_FORFEIT, "Loss due to losing player's failure to meet time control requirements."),
-        (UNTERMINATED, "Game not terminated."),        
+        (UNTERMINATED, "Game not terminated."),
     ]
 
     result = TextField(
@@ -104,7 +83,7 @@ class Result(Model):
 class Board(Model):
     BLACK_PIECES = ['q', 'k', 'b', 'n', 'r', 'p']
     WHITE_PIECES = [p.upper() for p in BLACK_PIECES]
-    
+
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     updated_at = DateTimeField(auto_now=True)
@@ -112,24 +91,6 @@ class Board(Model):
 
     def __str__(self):
         return self.fen
-
-    def move(self, from_square, to_square):
-        """
-        Make a move if it is legal, and check if the game is over
-        """
-        board = chess.Board(self.fen)
-        legal_moves = board.legal_moves
-            
-        requested_move = chess.Move.from_uci(f"{from_square}{to_square}")
-        
-        if requested_move in board.legal_moves:
-            board.push(requested_move)
-            self.fen = board.fen()
-
-            self.save()
-            self.game.is_game_over()
-            
-            return requested_move
 
 
 class Piece(Model):
@@ -202,64 +163,8 @@ class Game(Model):
         on_delete=CASCADE,
     )
 
-    def assign_color(self, username, preferred_color='white'):
-        colors = {
-            'white': self.whites_player,
-            'black': self.blacks_player,            
-        }
 
-        player_color = 'white'
-
-        if self.whites_player and self.blacks_player:
-            return 'full'
-
-        elif self.whites_player or self.blacks_player:
-            player_color = 'white' if self.blacks_player else 'black'
-
-        elif not self.whites_player and not self.blacks_player:
-            player_color = preferred_color
-            
-            if preferred_color == 'random':
-                player_color = 'black' if random.randint(0, 1) == 1 else 'white'                
-                
-        User = get_user_model()
-        auth_user = User.objects.get(username=username)        
-
-        if player_color == 'black':
-            self.blacks_player = auth_user
-
-        else:
-            self.whites_player = auth_user
-        
-        self.save()
-
-        return player_color
-
-    def is_game_over(self):
-        """
-        Update the game if it is over
-        Return True if the game is over, False if it is not
-        """
-        results_dict = {
-            '1-0': Result.WHITE_WINS,
-            '1/2-1/2': Result.DRAW,
-            '0-1': Result.BLACK_WINS,
-        }
-        
-        board = chess.Board(self.board.fen)
-        
-        if board.is_game_over():
-            result_string = board.result()
-            self.result = Result(result=results_dict.get(result_string), termination=Result.NORMAL)
-            self.finished_at = timezone.now()
-            self.result.save()
-            self.save()
-            return True
-
-        return False
-
-        
-class Move(Model):    
+class Move(Model):
     timestamp = DateTimeField(auto_now_add=True)
     piece = ForeignKey(
         Piece,

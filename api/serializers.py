@@ -1,10 +1,8 @@
-import uuid
-
-import chess
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import Game, Result, Board
+from . import services
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,31 +38,19 @@ class GameSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        board_data = validated_data.pop('board', {})
         result_data = validated_data.pop('result', {})
+        board_data = validated_data.pop('board', {})
 
         preferred_color = self.context['request'].data.get(
-            'preferred_color', 'random')
-
-        game_uuid = uuid.uuid4()
-
-        game_board = chess.Board()
-        fen = game_board.fen()
-        board_object = Board.objects.create(
-            **board_data, fen=fen, game_uuid=game_uuid)
-
-        result_object = Result.objects.create(
-            **result_data)
-
-        game = Game.objects.create(
-            result=result_object,
-            board=board_object,
-            uuid=game_uuid,
-            **validated_data
+            'preferred_color', 'random'
         )
 
         auth_username = self.context['request'].user
 
-        game.assign_color(auth_username, preferred_color)
+        game = services.create_game(
+            result_data=result_data, board_data=board_data, **validated_data
+        )
+
+        services.assign_color(game, auth_username, preferred_color)
 
         return game
