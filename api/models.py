@@ -122,9 +122,17 @@ class Piece(Model):
         (WHITE_KING, "White king"),
     ]
 
+    SQUARE_CHOICES = [(getattr(chess, i.upper()), i.upper(),) for i in chess.SQUARE_NAMES]
+    
     piece_type = CharField(
         max_length=1,
         choices=PIECE_CHOICES,
+    )
+    
+    square = CharField(
+        max_length=2,
+        choices=SQUARE_CHOICES,
+        null=True,
     )
 
     captured = BooleanField(default=False)
