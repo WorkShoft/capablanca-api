@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 
 from . import services
 from .models import Game
+from .permissions import PiecePermission 
 from .serializers import GameSerializer, BoardSerializer, UserSerializer
 
 
@@ -25,6 +26,7 @@ class CreateGame(mixins.RetrieveModelMixin, generics.CreateAPIView):
 
 class MovePiece(generics.UpdateAPIView):
     serializer_class = GameSerializer
+    permission_classes = [PiecePermission]
 
     def update(self, request, *args, **kwargs):
         from_square = request.data.get('from_square')
@@ -36,8 +38,7 @@ class MovePiece(generics.UpdateAPIView):
         board = game.board
         auth_user = User.objects.get(username=request.user)
 
-        if not services.player_owns_piece(auth_user, from_square, game):
-            return Response(data={'message': 'You can\'t move a piece at that square'}, status=status.HTTP_400_BAD_REQUEST)
+        self.check_object_permissions(self.request, game)
 
         move = services.move_piece(board, from_square, to_square)
 

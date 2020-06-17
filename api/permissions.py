@@ -14,12 +14,14 @@ class PiecePermission(permissions.BasePermission):
     Check if a piece belongs to a player (who is, for instance, trying to move it)
     """
 
+    message = "You can\'t move a piece at that square"
+
     def has_object_permission(self, request, view, obj):
         """
         Allow players to see each other's pieces
         Only allow the owner of a piece to move it (i.e. if you play as White you can only move white pieces)
 
-        python-chess Piece.color is True for white pieces
+        python-chess Piece.color is True for white pieces, False for black ones
         obj: Game instance
         """
 

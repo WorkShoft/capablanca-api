@@ -82,27 +82,6 @@ def move_piece(board_instance, from_square, to_square):
 
     return None
 
-
-def player_owns_piece(user, from_square, game):
-    """
-    Returns True if the piece at from_square belongs to the user
-    python-chess Piece.color is True for white pieces
-    """
-
-    square = getattr(chess, from_square.upper())
-    board = chess.Board(game.board.fen)
-
-    if user in (game.whites_player, game.blacks_player):
-        player_color = 'white' if user == game.whites_player else 'black'
-
-    else:
-        return False
-
-    piece_color = 'white' if board.color_at(square) else 'black'
-
-    return player_color == piece_color
-
-
 # ELO
 def get_expected_score(elo_instance, opponent_rating):
     """

@@ -138,8 +138,8 @@ class TestAPI(APITestCase):
 
         response = self.move_piece_view(request)
 
-        self.assertIn("message", response.data)
-        self.assertEqual("You can\'t move a piece at that square", response.data["message"])
+        self.assertIn("detail", response.data)
+        self.assertEqual("You can\'t move a piece at that square", response.data["detail"])
 
     def test_only_valid_moves_are_allowed(self):        
         game_request = self._create_game(preferred_color="white")
@@ -180,8 +180,8 @@ class TestAPI(APITestCase):
         response = self.move_piece_view(request)
         
 
-        self.assertIn("message", response.data)
-        self.assertEqual("You can\'t move a piece at that square", response.data["message"])
+        self.assertIn("detail", response.data)
+        self.assertEqual("You can\'t move a piece at that square", response.data["detail"])
         
     def test_game_end(self):
         moves = []
