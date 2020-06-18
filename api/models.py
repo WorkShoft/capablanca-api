@@ -109,7 +109,7 @@ class Board(Model):
         board_data = {
             "fen": board.fen(),
             "turn": board.turn,
-            "castling_rights": board.castling_rights,
+            "castling_xfen": board.castling_xfen(),
             "ep_square": board.ep_square,
             "fullmove_number": board.fullmove_number,
             "halfmove_clock": board.halfmove_clock,
