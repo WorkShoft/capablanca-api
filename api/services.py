@@ -96,8 +96,6 @@ def chess_board_from_uuid(uuid):
     It's safe to set turn, castling_rights, ep_square, halfmove_clock and fullmove_number directly.
     
     https://python-chess.readthedocs.io/en/latest/core.html#chess.Board
-
-    TODO: find out why setting chess_board.castling_rights leads to a regression
     """
     
     board = Board.objects.get(game_uuid=uuid)
