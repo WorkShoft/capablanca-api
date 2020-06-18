@@ -55,10 +55,3 @@ INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 # ------------------------------------------------------------------------------
 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
 INSTALLED_APPS += ["django_extensions"]  # noqa F405
-
-DATABASES["default"]["HOST"] = "localhost"
-DATABASES["default"]["TEST"] = {}
-DATABASES["default"]["TEST"]["NAME"] = "test"
-DATABASES["default"]["USER"] = 'postgres'
-DATABASES["default"]["PASSWORD"] = 'postgres'
-DATABASES["default"]["PASSWORD"] = 'postgres'

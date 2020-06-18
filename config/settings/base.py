@@ -46,6 +46,12 @@ DATABASES = {
 }
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["HOST"] = "localhost"
+DATABASES["default"]["TEST"] = {}
+DATABASES["default"]["TEST"]["NAME"] = "test"
+DATABASES["default"]["USER"] = 'postgres'
+DATABASES["default"]["PASSWORD"] = 'postgres'
+DATABASES["default"]["PASSWORD"] = 'postgres'
 
 
 # URLS

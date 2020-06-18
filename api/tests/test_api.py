@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate, APITestCase
 
-from .views import CreateGame, MovePiece, JoinGame
-from .models import Game, Result
+from api.views import CreateGame, MovePiece, JoinGame
+from api.models import Game, Result
 from chess_api_project.users.models import User
 
 
