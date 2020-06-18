@@ -86,11 +86,14 @@ class Board(Model):
 
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-    turn = IntegerField(null=True)
-    castling_xfen = TextField(null=True)
+
     ep_square = CharField(max_length=2, null=True)
+    castling_xfen = TextField(null=True)
+    castling_rights = TextField(null=True)
+    turn = IntegerField(null=True)
     fullmove_number = IntegerField(default=1)
     halfmove_clock = IntegerField(default=0)
+
     updated_at = DateTimeField(auto_now=True)
     game_uuid = UUIDField(default=uuid.uuid4)
 
@@ -110,43 +113,42 @@ class Board(Model):
             "fen": board.fen(),
             "turn": board.turn,
             "castling_xfen": board.castling_xfen(),
+            "castling_rights": board.castling_rights,
             "ep_square": board.ep_square,
             "fullmove_number": board.fullmove_number,
             "halfmove_clock": board.halfmove_clock,
         }
         
         return cls(**board_data)
-        
 
-        
-
+                
 class Piece(Model):
-    BLACK_PAWN = "P"
-    BLACK_KNIGHT = "N"
-    BLACK_BISHOP = "B"
-    BLACK_ROOK = "R"
-    BLACK_QUEEN = "Q"
-    BLACK_KING = "K"
-    WHITE_PAWN = "p"
-    WHITE_KNIGHT = "n"
-    WHITE_BISHOP = "b"
-    WHITE_ROOK = "r"
-    WHITE_QUEEN = "q"
-    WHITE_KING = "k"
+    BLACK_PAWN_SYMBOL = "P"
+    BLACK_KNIGHT_SYMBOL = "N"
+    BLACK_BISHOP_SYMBOL = "B"
+    BLACK_ROOK_SYMBOL = "R"
+    BLACK_QUEEN_SYMBOL = "Q"
+    BLACK_KING_SYMBOL = "K"
+    WHITE_PAWN_SYMBOL = "p"
+    WHITE_KNIGHT_SYMBOL = "n"
+    WHITE_BISHOP_SYMBOL = "b"
+    WHITE_ROOK_SYMBOL = "r"
+    WHITE_QUEEN_SYMBOL = "q"
+    WHITE_KING_SYMBOL = "k"
 
     PIECE_CHOICES = [
-        (BLACK_PAWN, "Black pawn"),
-        (BLACK_KNIGHT, "Black knight"),
-        (BLACK_BISHOP, "Black bishop"),
-        (BLACK_ROOK, "Black rook"),
-        (BLACK_QUEEN, "Black queen"),
-        (BLACK_KING, "Black king"),
-        (WHITE_PAWN, "White pawn"),
-        (WHITE_KNIGHT, "White knight"),
-        (WHITE_BISHOP, "White bishop"),
-        (WHITE_ROOK, "White rook"),
-        (WHITE_QUEEN, "White queen"),
-        (WHITE_KING, "White king"),
+        (BLACK_PAWN_SYMBOL, "Black pawn"),
+        (BLACK_KNIGHT_SYMBOL, "Black knight"),
+        (BLACK_BISHOP_SYMBOL, "Black bishop"),
+        (BLACK_ROOK_SYMBOL, "Black rook"),
+        (BLACK_QUEEN_SYMBOL, "Black queen"),
+        (BLACK_KING_SYMBOL, "Black king"),
+        (WHITE_PAWN_SYMBOL, "White pawn"),
+        (WHITE_KNIGHT_SYMBOL, "White knight"),
+        (WHITE_BISHOP_SYMBOL, "White bishop"),
+        (WHITE_ROOK_SYMBOL, "White rook"),
+        (WHITE_QUEEN_SYMBOL, "White queen"),
+        (WHITE_KING_SYMBOL, "White king"),
     ]
 
     SQUARE_CHOICES = [(getattr(chess, i.upper()), i.upper(),) for i in chess.SQUARE_NAMES]
@@ -171,6 +173,15 @@ class Piece(Model):
     def __str__(self):
         return self.piece_type
 
+    @classmethod
+    def get_all_pieces(cls, fen):
+        """
+        Return a list of Piece instances from a fen string
+        """
+        
+        board = chess.Board(fen)
+        
+        
 
 class Game(Model):
     uuid = UUIDField(default=uuid.uuid4, primary_key=True)
@@ -200,6 +211,10 @@ class Game(Model):
 
 
 class Move(Model):
+    """
+    Each individual move that composes a board's move stack
+    """
+    
     timestamp = DateTimeField(auto_now_add=True)
     piece = ForeignKey(
         Piece,
