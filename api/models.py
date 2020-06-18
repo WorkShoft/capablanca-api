@@ -86,12 +86,39 @@ class Board(Model):
 
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    turn = IntegerField(null=True)
+    castling_rights = TextField(null=True)
+    ep_square = CharField(max_length=2, null=True)
+    fullmove_number = IntegerField(default=1)
+    halfmove_clock = IntegerField(default=0)
     updated_at = DateTimeField(auto_now=True)
     game_uuid = UUIDField(default=uuid.uuid4)
 
     def __str__(self):
         return self.fen
 
+    @classmethod
+    def from_fen(cls, fen):
+        """
+        A FEN string contains the position part board_fen(), the turn, the castling part (castling_rights), 
+        the en passant square (ep_square), the halfmove_clock and the fullmove_number.
+        """
+
+        board = chess.Board(fen)
+
+        board_data = {
+            "fen": board.fen(),
+            "turn": board.turn,
+            "castling_rights": board.castling_rights,
+            "ep_square": board.ep_square,
+            "fullmove_number": board.fullmove_number,
+            "halfmove_clock": board.halfmove_clock,
+        }
+        
+        return cls(**board_data)
+        
+
+        
 
 class Piece(Model):
     BLACK_PAWN = "P"
