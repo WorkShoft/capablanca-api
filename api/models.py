@@ -87,7 +87,7 @@ class Board(Model):
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     turn = IntegerField(null=True)
-    castling_rights = TextField(null=True)
+    castling_xfen = TextField(null=True)
     ep_square = CharField(max_length=2, null=True)
     fullmove_number = IntegerField(default=1)
     halfmove_clock = IntegerField(default=0)
