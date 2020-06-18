@@ -205,10 +205,13 @@ class TestAPI(APITestCase):
         #Play all moves
         for counter, move in enumerate(moves):
             uci = move.uci()
+            from_square = uci[:2]
+            to_square = uci[2:]
+
             move = {
                 "uuid": game_uuid,
-                "from_square": uci[0:2],
-                "to_square": uci[2:4],
+                "from_square": from_square,
+                "to_square": to_square,
             }
 
             request_move = factory.put(
@@ -221,8 +224,5 @@ class TestAPI(APITestCase):
 
         game = Game.objects.get(uuid=game_uuid)
 
-
         self.assertEqual(Result.BLACK_WINS, game.result.result)
         self.assertEqual(Result.NORMAL, game.result.termination)
-        
-        
