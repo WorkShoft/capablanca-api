@@ -81,25 +81,52 @@ class Result(Model):
 
 
 class Board(Model):
+    """
+    python-chess Board data
+    """
+    
     BLACK_PIECES = ['q', 'k', 'b', 'n', 'r', 'p']
     WHITE_PIECES = [p.upper() for p in BLACK_PIECES]
 
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
-    ep_square = CharField(max_length=2, null=True)
+    ep_square = IntegerField(null=True)
     castling_xfen = TextField(null=True)
     castling_rights = TextField(null=True)
-    turn = IntegerField(null=True)
+    turn = BooleanField(default=True)
     fullmove_number = IntegerField(default=1)
     halfmove_clock = IntegerField(default=0)
 
     updated_at = DateTimeField(auto_now=True)
     game_uuid = UUIDField(default=uuid.uuid4)
 
-    def __str__(self):
-        return self.fen
+    def update(self, chess_board, *args, **kwargs):
+        """
+        Updates all the information needed to recover a Board (except for the move stack)
+        """
+        
+        attributes = [
+            'ep_square', 'turn', 'fullmove_number', 'halfmove_clock',
+        ]
 
+        for i in attributes:
+            setattr(self, i, getattr(chess_board, i)) 
+
+        self.castling_rights = str(chess_board.castling_rights)
+        self.fen = chess_board.fen()
+        self.castling_xfen = chess_board.castling_xfen()
+
+        self.save()
+
+    @property
+    def move_stack(self):
+        if self.move_set:
+            moves = self.move_set.all()
+            move_ucis = [m.uci() for m in moves]
+            return move_ucis 
+        return []
+        
     @classmethod
     def from_fen(cls, fen):
         """
@@ -110,7 +137,7 @@ class Board(Model):
         board = chess.Board(fen)
 
         board_data = {
-            "fen": board.fen(),
+            "fen": fen,
             "turn": board.turn,
             "castling_xfen": board.castling_xfen(),
             "castling_rights": board.castling_rights,
@@ -121,6 +148,9 @@ class Board(Model):
         
         return cls(**board_data)
 
+    def __str__(self):
+        return self.fen
+    
                 
 class Piece(Model):
     BLACK_PAWN_SYMBOL = "P"
@@ -177,6 +207,7 @@ class Piece(Model):
     def get_all_pieces(cls, fen):
         """
         Return a list of Piece instances from a fen string
+        TODO: decide what to do about this
         """
         
         board = chess.Board(fen)
@@ -215,16 +246,24 @@ class Move(Model):
     Each individual move that composes a board's move stack
     """
     
-    timestamp = DateTimeField(auto_now_add=True)
-    piece = ForeignKey(
-        Piece,
-        on_delete=CASCADE,
-    )
+    created_at = DateTimeField(auto_now_add=True)
     from_square = TextField()
     to_square = TextField()
 
+    board = ForeignKey(
+        Board,
+        on_delete=CASCADE,
+        null=True,
+    )
+
     def __str__(self):
-        return f'{from_square}{to_square}'
+        return f"{self.from_square}{self.to_square}"
+
+    def uci(self):
+        return chess.Move.from_uci(f"{self.from_square}{self.to_square}")
+
+    class Meta:
+        ordering = ["created_at"]
 
 
 class Position(Model):
