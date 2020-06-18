@@ -5,7 +5,7 @@ import chess
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from .models import Result, Game, Board
+from .models import Result, Game, Board, Move
 
 
 def is_game_over(game_instance):
@@ -19,7 +19,7 @@ def is_game_over(game_instance):
         '0-1': Result.BLACK_WINS,
     }
 
-    board = chess.Board(game_instance.board.fen)
+    board = chess_board_from_uuid(game_instance.uuid)
 
     if board.is_game_over():
         result_string = board.result()
@@ -62,25 +62,57 @@ def assign_color(game_instance, username, preferred_color='white'):
 
     return player_color
 
-
-def move_piece(board_instance, from_square, to_square):
+# Board
+def move_piece(board_instance, from_square, to_square, chess_board=None):
     """
     Make a move if it is legal, and check if the game is over
     """
-    board = chess.Board(board_instance.fen)
 
+    if not chess_board:
+        chess_board = chess_board_from_uuid(board_instance.game_uuid)
+        
     requested_move = chess.Move.from_uci(f"{from_square}{to_square}")
 
-    if requested_move in board.legal_moves:
-        board.push(requested_move)
-        board_instance.fen = board.fen()
+    if requested_move in chess_board.legal_moves:
+        chess_board.push(requested_move)
+        
+        Move.objects.create(
+            from_square=from_square,
+            to_square=to_square,
+            board=board_instance
+        )        
 
-        board_instance.save()
-        is_game_over(board_instance.game)
+        board_instance.update(chess_board)
+
+        if hasattr(board_instance, "game"):
+            is_game_over(board_instance.game)
 
         return requested_move
 
     return None
+
+def chess_board_from_uuid(uuid):
+    """
+    It's safe to set turn, castling_rights, ep_square, halfmove_clock and fullmove_number directly.
+    
+    https://python-chess.readthedocs.io/en/latest/core.html#chess.Board
+
+    TODO: find out why setting chess_board.castling_rights leads to a regression
+    """
+    
+    board = Board.objects.get(game_uuid=uuid)
+    
+    chess_board = chess.Board(board.fen)    
+
+    chess_board.ep_square = int(board.ep_square) if board.ep_square else None
+    chess_board.turn = board.turn
+    chess_board.castling_rights = int(board.castling_rights)
+    chess_board.fullmove_number = board.fullmove_number
+    chess_board.halfmove_clock = board.halfmove_clock
+    chess_board.move_stack = board.move_stack
+
+    return chess_board
+    
 
 # ELO
 def get_expected_score(elo_instance, opponent_rating):
@@ -107,8 +139,10 @@ def update_rating(elo_instance, score, opponent_rating):
 def create_game(result_data=None, board_data=None, **validated_data):
     game_uuid = uuid.uuid4()
 
+    chess_game = chess.Board()
+
     board_object = Board.objects.create(
-        **board_data, fen=chess.STARTING_FEN, game_uuid=game_uuid)
+        **board_data, fen=chess.STARTING_FEN, castling_rights=chess_game.castling_rights, game_uuid=game_uuid)
 
     result_object = Result.objects.create(
         **result_data)
