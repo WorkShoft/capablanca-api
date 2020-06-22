@@ -1,9 +1,9 @@
 # posts/urls.py
 from django.urls import path
-from .views import CreateGame, MovePiece, JoinGame
+from .views import GetCreateGame, MovePiece, JoinGame
 
 urlpatterns = [
-    path('game/', CreateGame.as_view()),
+    path('game/', GetCreateGame.as_view()),
     path('game/move/', MovePiece.as_view()),
     path('game/join/', JoinGame.as_view()),
 ]

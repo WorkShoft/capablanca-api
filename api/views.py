@@ -7,14 +7,14 @@ from django.contrib.auth import get_user_model
 
 from . import services
 from .models import Game
-from .permissions import PiecePermission 
+from .permissions import PiecePermission
 from .serializers import GameSerializer, BoardSerializer, UserSerializer
 
 
 User = get_user_model()
 
 
-class CreateGame(mixins.RetrieveModelMixin, generics.CreateAPIView):
+class GetCreateGame(mixins.RetrieveModelMixin, generics.CreateAPIView):
     serializer_class = GameSerializer
 
     def get_object(self):

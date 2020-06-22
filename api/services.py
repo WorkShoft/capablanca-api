@@ -63,6 +63,8 @@ def assign_color(game_instance, username, preferred_color='white'):
     return player_color
 
 # Board
+
+
 def move_piece(board_instance, from_square, to_square, chess_board=None):
     """
     Make a move if it is legal, and check if the game is over
@@ -70,17 +72,17 @@ def move_piece(board_instance, from_square, to_square, chess_board=None):
 
     if not chess_board:
         chess_board = chess_board_from_uuid(board_instance.game_uuid)
-        
+
     requested_move = chess.Move.from_uci(f"{from_square}{to_square}")
 
     if requested_move in chess_board.legal_moves:
         chess_board.push(requested_move)
-        
+
         Move.objects.create(
             from_square=from_square,
             to_square=to_square,
             board=board_instance
-        )        
+        )
 
         board_instance.update(chess_board)
 
@@ -91,16 +93,17 @@ def move_piece(board_instance, from_square, to_square, chess_board=None):
 
     return None
 
-def chess_board_from_uuid(uuid):
+
+def chess_board_from_uuid(board_uuid):
     """
     It's safe to set turn, castling_rights, ep_square, halfmove_clock and fullmove_number directly.
-    
+
     https://python-chess.readthedocs.io/en/latest/core.html#chess.Board
     """
-    
-    board = Board.objects.get(game_uuid=uuid)
-    
-    chess_board = chess.Board(board.fen)    
+
+    board = Board.objects.get(game_uuid=board_uuid)
+
+    chess_board = chess.Board(board.fen)
 
     chess_board.ep_square = int(board.ep_square) if board.ep_square else None
     chess_board.turn = board.turn
@@ -110,9 +113,35 @@ def chess_board_from_uuid(uuid):
     chess_board.move_stack = board.move_stack
 
     return chess_board
-    
+
+
+def create_board_from_pgn(pgn_file, starting_at=0):
+    board_instance = None
+    chess_board = None
+
+    with open(pgn_file, 'r') as f:
+        chess_game = chess.pgn.read_game(f)
+        chess_board = chess_game.board()
+
+        board_instance = Board.from_fen(chess_board.fen())
+        board_instance.save()
+
+        if starting_at:
+            move_ucis = [
+                i.move.uci()
+                for i in chess_game.mainline()
+            ][:starting_at]
+
+            for u in move_ucis:
+                move_piece(board_instance, u[:2],
+                           u[2:], chess_board=chess_board)
+
+    return (board_instance, chess_board)
+
 
 # ELO
+
+
 def get_expected_score(elo_instance, opponent_rating):
     """
     https://wikimedia.org/api/rest_v1/media/math/render/svg/51346e1c65f857c0025647173ae48ddac904adcb
