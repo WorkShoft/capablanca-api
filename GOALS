@@ -1,11 +1,17 @@
-v0.1 - Players can join games and make legal moves
-v0.2 - Checks, attacks, and game end detection
-v0.3 - Repetition detection with half-move clock
-v0.4 - Claims
-v0.5 - Results
-v0.6 - PGN parsing and writing
-v0.7 - ELO 
-v0.8 - Code refactor
-v0.9 - API Documentation and Postman collection
-v1.0 - 90% test coverage
+v0.1
+- Players can join games and make legal moves
+v0.2
+- Checks
+- Attacks
+- Game end detection
+v0.9
+- Repetition detection with half-move clock
+- Claims
+- Results
+- PGN parsing and writing
+- ELO 
+- Code refactor
+- API Documentation and Postman collection
+v1.0
+- Player vs Stockfish mode
 
