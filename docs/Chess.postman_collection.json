@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "0a2093e1-7876-4320-bee3-da5544eeedfc",
+		"name": "Chess",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CREATE GAME",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0535c604-e814-43d6-9c23-5c0cd1c78f30",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"GAME_UUID\", jsonData.uuid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"preferred_color\": \"white\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/chess/game/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chess",
+						"game",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET GAME",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/chess/game/?uuid={{GAME_UUID}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chess",
+						"game",
+						""
+					],
+					"query": [
+						{
+							"key": "uuid",
+							"value": "{{GAME_UUID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OBTAIN AUTH TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0a2bf398-af3e-4bce-aa62-4eb9ea83eeb2",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"AUTH_TOKEN\", jsonData.access);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"mikel\", \"password\": \"superdupermikel\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/auth-token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"auth-token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OBTAIN ACCESS TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d04d494f-d117-40ea-be76-3d1b8d49a85e",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"AUTH_TOKEN\", jsonData.access);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"mikel\", \"password\": \"superdupermikel\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "REFRESH TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2b5f7f67-ec31-4cbf-bb1b-96d8987d3f84",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.access);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"refresh\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTU5MjkxNTE4OCwianRpIjoiMzJkYjVkNDVkZTA4NDAzMWE4N2JiM2Q2NDhkZjY0NDUiLCJ1c2VyX2lkIjoxfQ._PxYUzN68Ljr8DVHeu_Ln8Lx9ltxLL1C8OEPqtK4GQA\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/refresh/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						"refresh",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE PLAYER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/chess/player/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chess",
+						"player",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MOVE PIECE",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uuid\": \"{{GAME_UUID}}\",\n\t\"from_square\": \"e2\", \n\t\"to_square\": \"e4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/chess/game/board/move/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chess",
+						"game",
+						"board",
+						"move",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "JOIN GAME",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uuid\": \"{{GAME_UUID}}\",\n\t\"preferred_color\": \"random\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/chess/game/join/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chess",
+						"game",
+						"join",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
