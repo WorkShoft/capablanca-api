@@ -52,14 +52,6 @@ class TestAPI(APITestCase):
         return response
 
     def _move_piece(self, move, user):
-        """
--        request = factory.put(
--            "/chess/game/move/", move, format="json")
--        force_authenticate(request, user=self.user_one)
-
--        response = self.move_piece_view(request)
-
-        """
         request = factory.put(
             "/chess/game/move/", move, format="json")
 
