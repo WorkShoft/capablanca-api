@@ -26,14 +26,14 @@ class TestAPI(APITestCase):
 
     def _create_game(self, preferred_color="random"):
         data = {"preferred_color": preferred_color}
-        request = factory.post("/chess/game/", data, format="json")
+        request = factory.post("/chess/game/", data)
         force_authenticate(request, user=self.user_one)
 
         return request
 
     def _get_game(self, uuid, user):
         get_request = factory.get(
-            "/chess/game/?uuid={uuid}".format(uuid=uuid, format="json"))
+            "/chess/game/?uuid={uuid}".format(uuid=uuid))
 
         force_authenticate(get_request, user=user)
 
@@ -45,7 +45,7 @@ class TestAPI(APITestCase):
             "preferred_color": preferred_color,
         }
 
-        join_request = factory.put("/chess/game/join/", data, format="json")
+        join_request = factory.put("/chess/game/join/", data)
         force_authenticate(join_request, user=user)
 
         response = self.join_game_view(join_request)
@@ -53,7 +53,7 @@ class TestAPI(APITestCase):
 
     def _move_piece(self, move, user):
         request = factory.put(
-            "/chess/game/move/", move, format="json")
+            "/chess/game/board/move/", move)
 
         force_authenticate(request, user=user)
 
@@ -124,6 +124,7 @@ class TestAPI(APITestCase):
 
         response_blacks = self._move_piece(second_move, self.user_two)
 
+        print(response_blacks.data)
         self.assertIn("uuid", response_whites.data)
         self.assertIn("uuid", response_blacks.data)
 
@@ -185,7 +186,6 @@ class TestAPI(APITestCase):
         # Create board and game from PGN
         with open("api/pgn_games/fools_mate.pgn") as f:
             game_pgn = chess.pgn.read_game(f)
-            board = game_pgn.board()
             moves = [move for move in game_pgn.mainline_moves()]
 
         # Create game
@@ -194,10 +194,10 @@ class TestAPI(APITestCase):
         game_uuid = response.data.get("uuid")
 
         # Second player joins
-        join_request = self._join_game(response.data.get(
+        self._join_game(response.data.get(
             "uuid"), self.user_two, preferred_color="black")
 
-       # Play all moves
+        # Play all moves
         for counter, move in enumerate(moves):
             uci = move.uci()
             from_square = uci[:2]
