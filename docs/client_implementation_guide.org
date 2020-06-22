@@ -1,0 +1,7 @@
+* [[https://www.codementor.io/@obabichev/react-token-auth-12os8txqo1][Token Auth]]
+   1. Tokens should be stored in local storage
+   2. Tokens should be restored on page reload
+   3. Access token should be passed in the network requests
+   4. After expiration access token should be updated by refresh token if the last one is presented
+   5. React components should have access to the auth information to render appropriate UI
+   6. The solution should be made with pure React (without Redux, thunk, etc..)
