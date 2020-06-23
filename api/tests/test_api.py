@@ -124,7 +124,6 @@ class TestAPI(APITestCase):
 
         response_blacks = self._move_piece(second_move, self.user_two)
 
-        print(response_blacks.data)
         self.assertIn("uuid", response_whites.data)
         self.assertIn("uuid", response_blacks.data)
 

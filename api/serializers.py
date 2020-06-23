@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = ('fen', 'updated_at', 'game_uuid',)
+        fields = ('fen', 'board_fen', 'updated_at', 'game_uuid',)
 
 
 class ResultSerializer(serializers.ModelSerializer):

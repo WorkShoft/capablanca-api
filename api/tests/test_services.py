@@ -34,7 +34,8 @@ def test_chess_board_from_uuid():
     assert chess_board.fullmove_number == new_chess_board.fullmove_number
     assert chess_board.halfmove_clock == new_chess_board.halfmove_clock
     assert chess_board.move_stack == new_chess_board.move_stack
-
+    assert chess_board.fen() == new_chess_board.fen()
+    assert chess_board.board_fen() == new_chess_board.board_fen()
 
 @pytest.mark.django_db
 def test_create_board_from_pgn():
