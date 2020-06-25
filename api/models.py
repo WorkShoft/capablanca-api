@@ -90,7 +90,7 @@ class Board(Model):
 
     fen = TextField(
         default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-    board_fen = TextField(default="rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR")
+    board_fen = TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
     ep_square = IntegerField(null=True)
     castling_xfen = TextField(null=True)
     castling_rights = TextField(null=True)
