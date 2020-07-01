@@ -43,7 +43,7 @@ class MovePiece(generics.UpdateAPIView):
         move = services.move_piece(board, from_square, to_square)
 
         if move:
-            return Response(data=self.serializer_class(game).data, status=status.HTTP_204_NO_CONTENT)
+            return Response(self.serializer_class(game).data)
 
         else:
             return Response(data={'message': f'{from_square}{to_square} is not a valid move.'}, status=status.HTTP_400_BAD_REQUEST)
