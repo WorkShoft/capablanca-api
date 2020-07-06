@@ -1,4 +1,3 @@
-import pytest
 import chess
 from api.models import Board
 

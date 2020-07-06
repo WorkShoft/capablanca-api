@@ -3,7 +3,7 @@ import chess.pgn
 import pytest
 
 from api import services
-from api.models import Board, Move
+from api.models import Board
 
 
 @pytest.mark.django_db

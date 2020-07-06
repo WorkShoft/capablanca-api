@@ -1,6 +1,5 @@
 import chess
 import uuid
-import random
 
 from django.db.models import (
     Model,

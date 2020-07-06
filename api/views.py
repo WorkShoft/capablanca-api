@@ -1,18 +1,15 @@
-import chess
-from rest_framework import generics, mixins, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
 
 from . import services
 from .models import Game
 from .permissions import GamePermission
-from .serializers import GameSerializer, BoardSerializer, UserSerializer
+from .serializers import GameSerializer
 
 
 User = get_user_model()
@@ -65,7 +62,8 @@ class GameViewSet(viewsets.ModelViewSet):
 
         game = get_object_or_404(Game, uuid=game_uuid)
 
-        services.assign_color(game, request.user, preferred_color=preferred_color)
+        services.assign_color(game, request.user,
+                              preferred_color=preferred_color)
 
         serialized_game = GameSerializer(game).data
 

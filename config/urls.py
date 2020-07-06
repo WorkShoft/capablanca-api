@@ -11,7 +11,6 @@ from rest_framework_simplejwt.views import (
 )
 from rest_framework.schemas import get_schema_view
 
-import rest_framework
 
 
 urlpatterns = [
