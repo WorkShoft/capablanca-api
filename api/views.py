@@ -30,6 +30,7 @@ class GameViewSet(viewsets.ModelViewSet):
         to_square = request.data.get("to_square")
 
         game_uuid = kwargs.get("pk")
+
         game = get_object_or_404(Game, uuid=game_uuid)
 
         board = game.board
@@ -59,8 +60,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
         game = get_object_or_404(Game, uuid=game_uuid)
 
-        services.assign_color(game, request.user,
-                              preferred_color=preferred_color)
+        services.assign_color(game, request.user, preferred_color=preferred_color)
 
         serialized_game = GameSerializer(game).data
 
