@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -45,7 +46,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
         else:
             return Response(
-                data={"message": f"{from_square}{to_square} is not a valid move."},
+                data={"detail": f"{from_square}{to_square} is not a valid move."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -66,43 +67,14 @@ class GameViewSet(viewsets.ModelViewSet):
 
         return Response(data=serialized_game, status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=["get"])
+    def get_unfinished_games(self, request, *args, **kwargs):
+        """
+        Get a list of unfinished games played by the user
+        """
+        
+        user = self.request.user
+        games = Game.objects.filter(Q(whites_player=user) | Q(blacks_player=user))
 
-# class MovePiece(generics.UpdateAPIView):
-#     serializer_class = GameSerializer
-#     permission_classes = [PiecePermission]
-
-#     def update(self, request, *args, **kwargs):
-#         from_square = request.data.get('from_square')
-#         to_square = request.data.get('to_square')
-
-#         game_uuid = request.data.get('uuid')
-#         game = get_object_or_404(Game, uuid=game_uuid)
-
-#         board = game.board
-#         auth_user = User.objects.get(username=request.user)
-
-#         self.check_object_permissions(self.request, game)
-
-#         move = services.move_piece(board, from_square, to_square)
-
-#         if move:
-#             return Response(self.serializer_class(game).data)
-
-#         else:
-#             return Response(data={'message': f'{from_square}{to_square} is not a valid move.'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class JoinGame(generics.UpdateAPIView):
-#     serializer_class = GameSerializer
-
-#     def update(self, request, *args, **kwargs):
-#         game_uuid = request.data.get('uuid')
-#         preferred_color = request.data.get('preferred_color')
-
-#         game = get_object_or_404(Game, uuid=game_uuid)
-
-#         services.assign_color(game, request.user,
-#                               preferred_color=preferred_color)
-
-#         serialized_game = GameSerializer(game).data
-#         return Response(data=serialized_game, status=status.HTTP_204_NO_CONTENT)
+        serialized_games = GameSerializer(games, many=True).data
+        return Response(data=serialized_games)

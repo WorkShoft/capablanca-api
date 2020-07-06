@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class GamePermission(permissions.BasePermission):
-    message = "You can't move a piece at that square"
+    message = "You can't move the piece at that square"
 
     def has_object_permission(self, request, view, obj):
         """
