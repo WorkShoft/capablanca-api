@@ -6,18 +6,46 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0005_auto_20200610_1648'),
+        ("api", "0005_auto_20200610_1648"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='board',
-            name='layout',
-            field=models.TextField(default='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
+            model_name="board",
+            name="layout",
+            field=models.TextField(
+                default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            ),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='description',
-            field=models.TextField(choices=[('Scheduled', 'Scheduled'), ('Postponed', 'Postponed'), ('Finished (no moves)', 'Finished without any moves played'), ('In progress', 'In progress'), ('Adjourned', 'Adjourned'), ('Finished (basic rules)', 'Finished according to the Basic Rules of Play'), ('Finished (clock)', 'Finished by the clock'), ('Draw', 'Draw'), ('Finished (breach)', 'Finished because of a breach of rules of one player'), ('Finished (compliance)', 'Finished because both players persistently refuse to comply with the laws of chess'), ('TBD', 'To be decided'), ('Abandoned', 'Abandoned'), ('Unknown', 'Unknown')], default='In progress'),
+            model_name="result",
+            name="description",
+            field=models.TextField(
+                choices=[
+                    ("Scheduled", "Scheduled"),
+                    ("Postponed", "Postponed"),
+                    ("Finished (no moves)", "Finished without any moves played"),
+                    ("In progress", "In progress"),
+                    ("Adjourned", "Adjourned"),
+                    (
+                        "Finished (basic rules)",
+                        "Finished according to the Basic Rules of Play",
+                    ),
+                    ("Finished (clock)", "Finished by the clock"),
+                    ("Draw", "Draw"),
+                    (
+                        "Finished (breach)",
+                        "Finished because of a breach of rules of one player",
+                    ),
+                    (
+                        "Finished (compliance)",
+                        "Finished because both players persistently refuse to comply with the laws of chess",
+                    ),
+                    ("TBD", "To be decided"),
+                    ("Abandoned", "Abandoned"),
+                    ("Unknown", "Unknown"),
+                ],
+                default="In progress",
+            ),
         ),
     ]

@@ -9,6 +9,10 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from rest_framework.schemas import get_schema_view
+
+import rest_framework
+
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -22,17 +26,30 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # custom urls
     path("chess/", include("api.urls")),
+    # OpenAPI
+    path(
+        "docs/",
+        get_schema_view(
+            title="Chess API",
+            description="Multiplayer Chess API",
+            version="0.2.0",
+            urlconf="api.urls",
+        ),
+        name="openapi-schema",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
 urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
+    # Simple JWT
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
-    # Simple JWT
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # DRF auth
+    path("api-auth/", include("rest_framework.urls")),
 ]
 
 if settings.DEBUG:
@@ -59,5 +76,4 @@ if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
 
-        urlpatterns = [
-            path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns

@@ -16,97 +16,297 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Board',
+            name="Board",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('layout', models.CharField(max_length=127)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("layout", models.CharField(max_length=127)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Claim',
+            name="Claim",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('claim_type', models.CharField(choices=[('tr', 'Threefold repetition'), ('ft', 'Fifty moves'), ('d', 'Draw')], max_length=2)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "claim_type",
+                    models.CharField(
+                        choices=[
+                            ("tr", "Threefold repetition"),
+                            ("ft", "Fifty moves"),
+                            ("d", "Draw"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Elo',
+            name="Elo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rating', models.IntegerField(default=0)),
-                ('wins', models.IntegerField(default=0)),
-                ('losses', models.IntegerField(default=0)),
-                ('draws', models.IntegerField(default=0)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rating", models.IntegerField(default=0)),
+                ("wins", models.IntegerField(default=0)),
+                ("losses", models.IntegerField(default=0)),
+                ("draws", models.IntegerField(default=0)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Piece',
+            name="Piece",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('piece_type', models.CharField(choices=[('P', 'Black pawn'), ('N', 'Black knight'), ('B', 'Black bishop'), ('R', 'Black rook'), ('Q', 'Black queen'), ('K', 'Black king'), ('p', 'White pawn'), ('n', 'White knight'), ('b', 'White bishop'), ('r', 'White rook'), ('q', 'White queen'), ('k', 'White king')], max_length=1)),
-                ('captured', models.BooleanField(default=False)),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Board')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "piece_type",
+                    models.CharField(
+                        choices=[
+                            ("P", "Black pawn"),
+                            ("N", "Black knight"),
+                            ("B", "Black bishop"),
+                            ("R", "Black rook"),
+                            ("Q", "Black queen"),
+                            ("K", "Black king"),
+                            ("p", "White pawn"),
+                            ("n", "White knight"),
+                            ("b", "White bishop"),
+                            ("r", "White rook"),
+                            ("q", "White queen"),
+                            ("k", "White king"),
+                        ],
+                        max_length=1,
+                    ),
+                ),
+                ("captured", models.BooleanField(default=False)),
+                (
+                    "board",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Board"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Result',
+            name="Result",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.TextField(choices=[('Scheduled', 'Scheduled'), ('Postponed', 'Postponed'), ('Finished (no moves)', 'Finished without any moves played'), ('In progress', 'In progress'), ('Adjourned', 'Adjourned'), ('Finished (basic rules)', 'Finished according to the Basic Rules of Play'), ('Finished (clock)', 'Finished by the clock'), ('Draw', 'Draw'), ('Finished (breach)', 'Finished because of a breach of rules of one player'), ('Finished (compliance)', 'Finished because both players persistently refuse to comply with the laws of chess'), ('TBD', 'To be decided'), ('Abandoned', 'Abandoned'), ('Unknown', 'Unknown')])),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        choices=[
+                            ("Scheduled", "Scheduled"),
+                            ("Postponed", "Postponed"),
+                            (
+                                "Finished (no moves)",
+                                "Finished without any moves played",
+                            ),
+                            ("In progress", "In progress"),
+                            ("Adjourned", "Adjourned"),
+                            (
+                                "Finished (basic rules)",
+                                "Finished according to the Basic Rules of Play",
+                            ),
+                            ("Finished (clock)", "Finished by the clock"),
+                            ("Draw", "Draw"),
+                            (
+                                "Finished (breach)",
+                                "Finished because of a breach of rules of one player",
+                            ),
+                            (
+                                "Finished (compliance)",
+                                "Finished because both players persistently refuse to comply with the laws of chess",
+                            ),
+                            ("TBD", "To be decided"),
+                            ("Abandoned", "Abandoned"),
+                            ("Unknown", "Unknown"),
+                        ]
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Position',
+            name="Position",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('piece_file', models.CharField(max_length=1)),
-                ('piece_rank', models.CharField(max_length=1)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('uuid', models.UUIDField(default=uuid.uuid4)),
-                ('piece', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Piece')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("piece_file", models.CharField(max_length=1)),
+                ("piece_rank", models.CharField(max_length=1)),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("uuid", models.UUIDField(default=uuid.uuid4)),
+                (
+                    "piece",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Piece"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Player',
+            name="Player",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('guest', models.BooleanField(default=True)),
-                ('uuid', models.UUIDField(default=uuid.uuid4)),
-                ('elo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Elo')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("guest", models.BooleanField(default=True)),
+                ("uuid", models.UUIDField(default=uuid.uuid4)),
+                (
+                    "elo",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Elo"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Move',
+            name="Move",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('from_square', models.TextField()),
-                ('to_square', models.TextField()),
-                ('piece', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Piece')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("from_square", models.TextField()),
+                ("to_square", models.TextField()),
+                (
+                    "piece",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Piece"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_timestamp', models.DateTimeField(auto_now_add=True)),
-                ('end_timestamp', models.DateTimeField()),
-                ('blacks_player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='blacks_player', to='api.Player')),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Board')),
-                ('result', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Result')),
-                ('whites_player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='whites_player', to='api.Player')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start_timestamp", models.DateTimeField(auto_now_add=True)),
+                ("end_timestamp", models.DateTimeField()),
+                (
+                    "blacks_player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="blacks_player",
+                        to="api.Player",
+                    ),
+                ),
+                (
+                    "board",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Board"
+                    ),
+                ),
+                (
+                    "result",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Result"
+                    ),
+                ),
+                (
+                    "whites_player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="whites_player",
+                        to="api.Player",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ClaimItem',
+            name="ClaimItem",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('claim', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Claim')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Player')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "claim",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Claim"
+                    ),
+                ),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.Player"
+                    ),
+                ),
             ],
         ),
     ]

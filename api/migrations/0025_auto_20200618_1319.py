@@ -7,17 +7,16 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0024_board_castling_rights'),
+        ("api", "0024_board_castling_rights"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='move',
-            name='piece',
-        ),
+        migrations.RemoveField(model_name="move", name="piece",),
         migrations.AddField(
-            model_name='move',
-            name='board',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='api.Board'),
+            model_name="move",
+            name="board",
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to="api.Board"
+            ),
         ),
     ]

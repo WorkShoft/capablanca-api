@@ -22,9 +22,11 @@ def test_chess_board_from_uuid():
     second_move = "e7e5"
 
     services.move_piece(
-        board_instance, first_move[:2], first_move[2:], chess_board=chess_board)
+        board_instance, first_move[:2], first_move[2:], chess_board=chess_board
+    )
     services.move_piece(
-        board_instance, second_move[:2], second_move[2:], chess_board=chess_board)
+        board_instance, second_move[:2], second_move[2:], chess_board=chess_board
+    )
 
     new_chess_board = services.chess_board_from_uuid(board_instance.game_uuid)
 
@@ -36,6 +38,7 @@ def test_chess_board_from_uuid():
     assert chess_board.move_stack == new_chess_board.move_stack
     assert chess_board.fen() == new_chess_board.fen()
     assert chess_board.board_fen() == new_chess_board.board_fen()
+
 
 @pytest.mark.django_db
 def test_create_board_from_pgn():

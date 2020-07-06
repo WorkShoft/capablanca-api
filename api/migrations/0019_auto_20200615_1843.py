@@ -6,13 +6,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0018_auto_20200615_1345'),
+        ("api", "0018_auto_20200615_1345"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='result',
-            name='description',
-            field=models.TextField(choices=[('Abandoned', 'Abandoned game.'), ('Adjudication', 'Result due to third party adjudication process.'), ('Death', 'One or both players died during the course of this game.'), ('Emergency', 'Game concluded due to unforeseen circumstances.'), ('Normal', 'Game terminated in a normal fashion.'), ('Rules infraction', "Administrative forfeit due to losing player's failure to observe either the Laws of Chess or the event regulations."), ('Time forfeit', "Loss due to losing player's failure to meet time control requirements."), ('Unterminated', 'Game not terminated.')], default='Unterminated'),
+            model_name="result",
+            name="description",
+            field=models.TextField(
+                choices=[
+                    ("Abandoned", "Abandoned game."),
+                    ("Adjudication", "Result due to third party adjudication process."),
+                    (
+                        "Death",
+                        "One or both players died during the course of this game.",
+                    ),
+                    ("Emergency", "Game concluded due to unforeseen circumstances."),
+                    ("Normal", "Game terminated in a normal fashion."),
+                    (
+                        "Rules infraction",
+                        "Administrative forfeit due to losing player's failure to observe either the Laws of Chess or the event regulations.",
+                    ),
+                    (
+                        "Time forfeit",
+                        "Loss due to losing player's failure to meet time control requirements.",
+                    ),
+                    ("Unterminated", "Game not terminated."),
+                ],
+                default="Unterminated",
+            ),
         ),
     ]

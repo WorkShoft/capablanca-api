@@ -7,13 +7,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0010_auto_20200611_1027'),
+        ("api", "0010_auto_20200611_1027"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='elo',
-            name='player',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='api.Player'),
+            model_name="elo",
+            name="player",
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to="api.Player"
+            ),
         ),
     ]

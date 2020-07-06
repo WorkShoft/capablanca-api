@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0030_auto_20200618_1434'),
+        ("api", "0030_auto_20200618_1434"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='board',
-            name='turn',
-            field=models.BooleanField(default=True),
+            model_name="board", name="turn", field=models.BooleanField(default=True),
         ),
     ]

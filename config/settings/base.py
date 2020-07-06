@@ -49,9 +49,9 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["HOST"] = "localhost"
 DATABASES["default"]["TEST"] = {}
 DATABASES["default"]["TEST"]["NAME"] = "test"
-DATABASES["default"]["USER"] = 'postgres'
-DATABASES["default"]["PASSWORD"] = 'postgres'
-DATABASES["default"]["PASSWORD"] = 'postgres'
+DATABASES["default"]["USER"] = "postgres"
+DATABASES["default"]["PASSWORD"] = "postgres"
+DATABASES["default"]["PASSWORD"] = "postgres"
 
 
 # URLS
@@ -81,7 +81,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "rest_framework.authtoken",
-    'corsheaders',
+    "corsheaders",
 ]
 
 LOCAL_APPS = [
@@ -138,7 +138,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    'corsheaders.middleware.CorsMiddleware',  
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -267,8 +267,7 @@ LOGGING = {
 
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool(
-    "DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -284,20 +283,27 @@ SOCIALACCOUNT_ADAPTER = "chess_api_project.users.adapters.SocialAccountAdapter"
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
+    # Authentication
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    # Permissions
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    # OpenAPI
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    # Pagination
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10,
 }
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    "http://localhost:3000",
 ]
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=15),
 }

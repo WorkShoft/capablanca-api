@@ -1,0 +1,13 @@
+info:
+  description: ''
+  title: ''
+  version: ''
+openapi: 3.0.0
+paths:
+  /auth-token/:
+    post:
+      operationId: auth-token_create
+      tags:
+      - auth-token
+servers:
+- url: ''

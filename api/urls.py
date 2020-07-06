@@ -1,9 +1,17 @@
 # posts/urls.py
-from django.urls import path
-from .views import GetCreateGame, MovePiece, JoinGame
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from .views import GameViewSet
+
+
+game_list = GameViewSet.as_view({"get": "list",})
+
+game_detail = GameViewSet.as_view({"get": "detail",})
+
+router = DefaultRouter()
+router.register(r"game", GameViewSet)
 
 urlpatterns = [
-    path('game/', GetCreateGame.as_view()),
-    path('game/board/move/', MovePiece.as_view()),
-    path('game/join/', JoinGame.as_view()),
+    path("", include(router.urls)),
 ]

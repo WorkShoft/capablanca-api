@@ -7,13 +7,13 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0012_auto_20200611_1101'),
+        ("api", "0012_auto_20200611_1101"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='board',
-            name='game_uuid',
+            model_name="board",
+            name="game_uuid",
             field=models.UUIDField(default=uuid.uuid4),
         ),
     ]

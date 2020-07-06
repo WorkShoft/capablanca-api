@@ -8,19 +8,30 @@ from . import services
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('username', 'active',)
+        fields = (
+            "username",
+            "active",
+        )
 
 
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = ('fen', 'board_fen', 'updated_at', 'game_uuid',)
+        fields = (
+            "fen",
+            "board_fen",
+            "updated_at",
+            "game_uuid",
+        )
 
 
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = ('result', 'termination',)
+        fields = (
+            "result",
+            "termination",
+        )
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -32,20 +43,23 @@ class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = (
-            'uuid', 'blacks_player', 'whites_player',
-            'created_at', 'started_at', 'finished_at',
-            'board', 'result',
+            "uuid",
+            "blacks_player",
+            "whites_player",
+            "created_at",
+            "started_at",
+            "finished_at",
+            "board",
+            "result",
         )
 
     def create(self, validated_data):
-        result_data = validated_data.pop('result', {})
-        board_data = validated_data.pop('board', {})
+        result_data = validated_data.pop("result", {})
+        board_data = validated_data.pop("board", {})
 
-        preferred_color = self.context['request'].data.get(
-            'preferred_color', 'random'
-        )
+        preferred_color = self.context["request"].data.get("preferred_color", "random")
 
-        auth_username = self.context['request'].user
+        auth_username = self.context["request"].user
 
         game = services.create_game(
             result_data=result_data, board_data=board_data, **validated_data

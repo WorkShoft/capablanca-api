@@ -9,12 +9,8 @@ from rest_framework import permissions
 User = get_user_model()
 
 
-class PiecePermission(permissions.BasePermission):
-    """
-    Check if a piece belongs to a player (who is, for instance, trying to move it)
-    """
-
-    message = "You can\'t move a piece at that square"
+class GamePermission(permissions.BasePermission):
+    message = "You can't move a piece at that square"
 
     def has_object_permission(self, request, view, obj):
         """
@@ -28,17 +24,24 @@ class PiecePermission(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        from_square = request.data.get('from_square')
-        square = getattr(chess, from_square.upper())
-        board = chess.Board(obj.board.fen)
-        user = User.objects.get(username=request.user)
-
-        if user in (obj.whites_player, obj.blacks_player):
-            player_color = 'white' if user == obj.whites_player else 'black'
-
-        else:
+        elif not request.user.is_authenticated:
             return False
 
-        piece_color = 'white' if board.color_at(square) else 'black'
+        elif view.action == "move":
+            from_square = request.data.get("from_square")
+            square = getattr(chess, from_square.upper())
+            board = chess.Board(obj.board.fen)
+            user = User.objects.get(username=request.user)
 
-        return player_color == piece_color
+            if user in (obj.whites_player, obj.blacks_player):
+                player_color = "white" if user == obj.whites_player else "black"
+
+            else:
+                return False
+
+            piece_color = "white" if board.color_at(square) else "black"
+
+            return player_color == piece_color
+
+        else:
+            return True

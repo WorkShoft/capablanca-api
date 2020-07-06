@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0026_auto_20200618_1400'),
+        ("api", "0026_auto_20200618_1400"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='board',
-            name='ep_square',
-            field=models.IntegerField(null=True),
+            model_name="board", name="ep_square", field=models.IntegerField(null=True),
         ),
     ]

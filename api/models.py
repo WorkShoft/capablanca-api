@@ -2,7 +2,18 @@ import chess
 import uuid
 import random
 
-from django.db.models import Model, IntegerField, CharField, TextField, DateTimeField, BooleanField, UUIDField, OneToOneField, ForeignKey, CASCADE
+from django.db.models import (
+    Model,
+    IntegerField,
+    CharField,
+    TextField,
+    DateTimeField,
+    BooleanField,
+    UUIDField,
+    OneToOneField,
+    ForeignKey,
+    CASCADE,
+)
 from django.conf import settings
 
 
@@ -18,11 +29,7 @@ class Elo(Model):
     draws = IntegerField(default=0)
     updated_at = DateTimeField(auto_now=True)
 
-    player = ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=CASCADE,
-        null=True
-    )
+    player = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE, null=True)
 
 
 class Result(Model):
@@ -53,7 +60,10 @@ class Result(Model):
         (WHITE_WINS, "White wins"),
         (BLACK_WINS, "Black wins"),
         (DRAW, "Drawn game"),
-        (IN_PROGRESS, "Game still in progress, game abandoned, or result otherwise unknown"),
+        (
+            IN_PROGRESS,
+            "Game still in progress, game abandoned, or result otherwise unknown",
+        ),
     ]
 
     TERMINATION_CHOICES = [
@@ -62,19 +72,19 @@ class Result(Model):
         (DEATH, "One or both players died during the course of this game."),
         (EMERGENCY, "Game concluded due to unforeseen circumstances."),
         (NORMAL, "Game terminated in a normal fashion."),
-        (RULES_INFRACTION, "Administrative forfeit due to losing player's failure to observe either the Laws of Chess or the event regulations."),
-        (TIME_FORFEIT, "Loss due to losing player's failure to meet time control requirements."),
+        (
+            RULES_INFRACTION,
+            "Administrative forfeit due to losing player's failure to observe either the Laws of Chess or the event regulations.",
+        ),
+        (
+            TIME_FORFEIT,
+            "Loss due to losing player's failure to meet time control requirements.",
+        ),
         (UNTERMINATED, "Game not terminated."),
     ]
 
-    result = TextField(
-        choices=RESULT_CHOICES,
-        default=IN_PROGRESS,
-    )
-    termination = TextField(
-        choices=TERMINATION_CHOICES,
-        default=UNTERMINATED,
-    )
+    result = TextField(choices=RESULT_CHOICES, default=IN_PROGRESS,)
+    termination = TextField(choices=TERMINATION_CHOICES, default=UNTERMINATED,)
 
     def __str__(self):
         return self.result
@@ -84,12 +94,11 @@ class Board(Model):
     """
     python-chess Board data
     """
-    
-    BLACK_PIECES = ['q', 'k', 'b', 'n', 'r', 'p']
+
+    BLACK_PIECES = ["q", "k", "b", "n", "r", "p"]
     WHITE_PIECES = [p.upper() for p in BLACK_PIECES]
 
-    fen = TextField(
-        default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    fen = TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     board_fen = TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
     ep_square = IntegerField(null=True)
     castling_xfen = TextField(null=True)
@@ -105,13 +114,16 @@ class Board(Model):
         """
         Updates all the information needed to recover a Board (except for the move stack)
         """
-        
+
         attributes = [
-            'ep_square', 'turn', 'fullmove_number', 'halfmove_clock',
+            "ep_square",
+            "turn",
+            "fullmove_number",
+            "halfmove_clock",
         ]
 
         for i in attributes:
-            setattr(self, i, getattr(chess_board, i)) 
+            setattr(self, i, getattr(chess_board, i))
 
         self.castling_rights = str(chess_board.castling_rights)
         self.fen = chess_board.fen()
@@ -125,9 +137,9 @@ class Board(Model):
         if self.move_set:
             moves = self.move_set.all()
             move_ucis = [m.uci() for m in moves]
-            return move_ucis 
+            return move_ucis
         return []
-        
+
     @classmethod
     def from_fen(cls, fen):
         """
@@ -146,13 +158,13 @@ class Board(Model):
             "fullmove_number": board.fullmove_number,
             "halfmove_clock": board.halfmove_clock,
         }
-        
+
         return cls(**board_data)
 
     def __str__(self):
         return self.fen
-    
-                
+
+
 class Piece(Model):
     BLACK_PAWN_SYMBOL = "P"
     BLACK_KNIGHT_SYMBOL = "N"
@@ -182,24 +194,16 @@ class Piece(Model):
         (WHITE_KING_SYMBOL, "White king"),
     ]
 
-    SQUARE_CHOICES = [(getattr(chess, i.upper()), i.upper(),) for i in chess.SQUARE_NAMES]
-    
-    piece_type = CharField(
-        max_length=1,
-        choices=PIECE_CHOICES,
-    )
-    
-    square = CharField(
-        max_length=2,
-        choices=SQUARE_CHOICES,
-        null=True,
-    )
+    SQUARE_CHOICES = [
+        (getattr(chess, i.upper()), i.upper(),) for i in chess.SQUARE_NAMES
+    ]
+
+    piece_type = CharField(max_length=1, choices=PIECE_CHOICES,)
+
+    square = CharField(max_length=2, choices=SQUARE_CHOICES, null=True,)
 
     captured = BooleanField(default=False)
-    board = ForeignKey(
-        Board,
-        on_delete=CASCADE,
-    )
+    board = ForeignKey(Board, on_delete=CASCADE,)
 
     def __str__(self):
         return self.piece_type
@@ -210,52 +214,41 @@ class Piece(Model):
         Return a list of Piece instances from a fen string
         TODO: decide what to do about this
         """
-        
+
         board = chess.Board(fen)
-        
-        
+
 
 class Game(Model):
     uuid = UUIDField(default=uuid.uuid4, primary_key=True)
     whites_player = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
-        related_name='whites_player',
+        related_name="whites_player",
         null=True,
     )
     blacks_player = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
-        related_name='blacks_player',
+        related_name="blacks_player",
         null=True,
     )
     created_at = DateTimeField(auto_now_add=True)
     started_at = DateTimeField(null=True)
     finished_at = DateTimeField(null=True)
-    result = OneToOneField(
-        Result,
-        on_delete=CASCADE,
-    )
-    board = OneToOneField(
-        Board,
-        on_delete=CASCADE,
-    )
+    result = OneToOneField(Result, on_delete=CASCADE,)
+    board = OneToOneField(Board, on_delete=CASCADE,)
 
 
 class Move(Model):
     """
     Each individual move that composes a board's move stack
     """
-    
+
     created_at = DateTimeField(auto_now_add=True)
     from_square = TextField()
     to_square = TextField()
 
-    board = ForeignKey(
-        Board,
-        on_delete=CASCADE,
-        null=True,
-    )
+    board = ForeignKey(Board, on_delete=CASCADE, null=True,)
 
     def __str__(self):
         return f"{self.from_square}{self.to_square}"
@@ -272,42 +265,30 @@ class Position(Model):
     piece_rank = CharField(max_length=1)
     timestamp = DateTimeField(auto_now_add=True)
     uuid = UUIDField(default=uuid.uuid4)
-    piece = ForeignKey(
-        Piece,
-        on_delete=CASCADE,
-    )
+    piece = ForeignKey(Piece, on_delete=CASCADE,)
 
     def __str__(self):
-        return f'{piece_file}{piece_rank}'
+        return f"{piece_file}{piece_rank}"
 
 
 class Claim(Model):
-    THREEFOLD_REPETITION = 'tr'
-    FIFTY_MOVES = 'ft'
-    DRAW = 'd'
+    THREEFOLD_REPETITION = "tr"
+    FIFTY_MOVES = "ft"
+    DRAW = "d"
 
     CLAIM_CHOICES = [
-        (THREEFOLD_REPETITION, 'Threefold repetition'),
-        (FIFTY_MOVES, 'Fifty moves'),
-        (DRAW, 'Draw'),
+        (THREEFOLD_REPETITION, "Threefold repetition"),
+        (FIFTY_MOVES, "Fifty moves"),
+        (DRAW, "Draw"),
     ]
 
-    claim_type = CharField(
-        max_length=2,
-        choices=CLAIM_CHOICES,
-    )
+    claim_type = CharField(max_length=2, choices=CLAIM_CHOICES,)
 
     def __str__(self):
         return self.claim_type
 
 
 class ClaimItem(Model):
-    player = ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=CASCADE,
-    )
+    player = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE,)
     timestamp = DateTimeField(auto_now_add=True)
-    claim = ForeignKey(
-        Claim,
-        on_delete=CASCADE,
-    )
+    claim = ForeignKey(Claim, on_delete=CASCADE,)

@@ -7,17 +7,16 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0007_game_uuid'),
+        ("api", "0007_game_uuid"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='game',
-            name='id',
-        ),
+        migrations.RemoveField(model_name="game", name="id",),
         migrations.AlterField(
-            model_name='game',
-            name='uuid',
-            field=models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False),
+            model_name="game",
+            name="uuid",
+            field=models.UUIDField(
+                default=uuid.uuid4, primary_key=True, serialize=False
+            ),
         ),
     ]
