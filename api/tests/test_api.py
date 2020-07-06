@@ -144,9 +144,8 @@ class TestAPI(APITestCase):
 
         self.assertIn("detail", response.data)
 
-        breakpoint()
         self.assertEqual(
-            "You can't move a piece at that square", str(response.data["detail"])
+            "You can't move the piece at that square", str(response.data["detail"])
         )
 
     def test_only_valid_moves_are_allowed(self):
@@ -223,6 +222,4 @@ class TestAPI(APITestCase):
 
         response = self._get_unfinished_games(self.user_one)
 
-        self.assertEqual(len(response.data), 1)
-
-        self.assertEqual(game_response.data.get("uuid"), response.data[0].get("uuid"))
+        self.assertEqual(game_response.data.get("uuid"), response.data.get('results')[0].get('uuid'))

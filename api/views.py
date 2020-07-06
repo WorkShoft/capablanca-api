@@ -67,7 +67,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
         return Response(data=serialized_game, status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=False, methods=["get"])
     def get_unfinished_games(self, request, *args, **kwargs):
         """
         Get a list of unfinished games played by the user
@@ -76,5 +76,10 @@ class GameViewSet(viewsets.ModelViewSet):
         user = self.request.user
         games = Game.objects.filter(Q(whites_player=user) | Q(blacks_player=user))
 
-        serialized_games = GameSerializer(games, many=True).data
+        page = self.paginate_queryset(games)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serialized_games = self.get_serializer(games, many=True).data
         return Response(data=serialized_games)
