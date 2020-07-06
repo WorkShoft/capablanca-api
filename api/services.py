@@ -5,7 +5,7 @@ import chess
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from .models import Result, Game, Board, Move
+from .models import Board, Game, Move, Result
 
 
 def is_game_over(game_instance):

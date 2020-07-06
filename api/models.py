@@ -1,19 +1,19 @@
-import chess
 import uuid
 
-from django.db.models import (
-    Model,
-    IntegerField,
-    CharField,
-    TextField,
-    DateTimeField,
-    BooleanField,
-    UUIDField,
-    OneToOneField,
-    ForeignKey,
-    CASCADE,
-)
+import chess
 from django.conf import settings
+from django.db.models import (
+    CASCADE,
+    BooleanField,
+    CharField,
+    DateTimeField,
+    ForeignKey,
+    IntegerField,
+    Model,
+    OneToOneField,
+    TextField,
+    UUIDField,
+)
 
 
 class Elo(Model):

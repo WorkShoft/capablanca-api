@@ -1,9 +1,8 @@
 # posts/urls.py
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import GameViewSet
-
 
 game_list = GameViewSet.as_view({"get": "list",})
 
