@@ -144,9 +144,7 @@ class TestAPI(APITestCase):
 
         self.assertIn("detail", response.data)
 
-        self.assertEqual(
-            "You can't move the piece at that square", str(response.data["detail"])
-        )
+        self.assertEqual("That move is not valid or allowed", response.data["detail"])
 
     def test_only_valid_moves_are_allowed(self):
         response = self._create_game(preferred_color="white")
@@ -179,9 +177,7 @@ class TestAPI(APITestCase):
         response = self._move_piece(response.data.get("uuid"), move, self.user_two)
 
         self.assertIn("detail", response.data)
-        self.assertEqual(
-            "You can't move the piece at that square", response.data["detail"]
-        )
+        self.assertEqual("That move is not valid or allowed", response.data["detail"])
 
     def test_game_end(self):
         moves = []
@@ -222,4 +218,6 @@ class TestAPI(APITestCase):
 
         response = self._get_unfinished_games(self.user_one)
 
-        self.assertEqual(game_response.data.get("uuid"), response.data.get('results')[0].get('uuid'))
+        self.assertEqual(
+            game_response.data.get("uuid"), response.data.get("results")[0].get("uuid")
+        )

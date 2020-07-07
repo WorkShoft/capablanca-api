@@ -72,7 +72,7 @@ class GameViewSet(viewsets.ModelViewSet):
         """
         Get a list of unfinished games played by the user
         """
-        
+
         user = self.request.user
         games = Game.objects.filter(Q(whites_player=user) | Q(blacks_player=user))
 

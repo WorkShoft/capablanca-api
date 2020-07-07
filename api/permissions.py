@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class GamePermission(permissions.BasePermission):
-    message = "You can't move the piece at that square"
+    message = "That move is not valid or allowed"
 
     def has_object_permission(self, request, view, obj):
         """
@@ -34,6 +34,9 @@ class GamePermission(permissions.BasePermission):
             user = User.objects.get(username=request.user)
 
             if user in (obj.whites_player, obj.blacks_player):
+                if obj.whites_player == obj.blacks_player:
+                    return True
+
                 player_color = "white" if user == obj.whites_player else "black"
 
             else:
