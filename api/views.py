@@ -65,7 +65,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
         serialized_game = GameSerializer(game).data
 
-        return Response(data=serialized_game, status=status.HTTP_204_NO_CONTENT)
+        return Response(data=serialized_game)
 
     @action(detail=False, methods=["get"])
     def get_unfinished_games(self, request, *args, **kwargs):
