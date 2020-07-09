@@ -74,7 +74,7 @@ class GameViewSet(viewsets.ModelViewSet):
         """
 
         user = self.request.user
-        games = Game.objects.filter(Q(whites_player=user) | Q(blacks_player=user))
+        games = Game.objects.filter(Q(whites_player=user) | Q(blacks_player=user)).order_by("-created_at")
 
         page = self.paginate_queryset(games)
         if page is not None:
