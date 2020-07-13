@@ -15,7 +15,8 @@ User = get_user_model()
 
 class GameViewSet(viewsets.ModelViewSet):
     serializer_class = GameSerializer
-    queryset = Game.objects.all()
+    queryset = Game.objects.all() \
+                           .order_by("-created_at")
 
     permission_classes = [
         GamePermission,
