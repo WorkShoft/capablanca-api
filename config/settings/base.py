@@ -64,6 +64,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
+    "channels",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -87,6 +88,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "chess_api_project.users.apps.UsersConfig",
     "api.apps.ApiConfig",
+    "stream_app.apps.StreamAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -306,4 +308,16 @@ CORS_ORIGIN_WHITELIST = [
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=15),
+}
+
+# Channels
+ASGI_APPLICATION = "config.routing.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
 }
