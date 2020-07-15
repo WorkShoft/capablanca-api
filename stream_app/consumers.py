@@ -37,7 +37,7 @@ class GameConsumer(WebsocketConsumer):
         # Send game over WebSocket
         self.send(text_data=json.dumps(game))
 
-    def disconnect(self):
+    def disconnect(self, *args, **kwargs):
         async_to_sync(self.channel_layer.group_discard)(
             self.game_group_name, self.channel_name
         )
