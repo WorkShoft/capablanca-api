@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from . import services
 from .models import Board, Game, Result
@@ -20,6 +21,7 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = (
             "fen",
             "board_fen",
+            "board_fen_flipped",
             "updated_at",
             "game_uuid",
         )
@@ -68,3 +70,13 @@ class GameSerializer(serializers.ModelSerializer):
         services.assign_color(game, auth_username, preferred_color)
 
         return game
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        data["name"] = self.user.username
+        data["active"] = self.user.active
+
+        return data

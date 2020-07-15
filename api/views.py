@@ -4,11 +4,12 @@ from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from . import services
 from .models import Game
 from .permissions import GamePermission
-from .serializers import GameSerializer
+from .serializers import GameSerializer, CustomTokenObtainPairSerializer
 
 User = get_user_model()
 
@@ -27,7 +28,7 @@ class GameViewSet(viewsets.ModelViewSet):
         """
         Move a piece
         """
-
+        
         from_square = request.data.get("from_square")
         to_square = request.data.get("to_square")
 
@@ -84,3 +85,8 @@ class GameViewSet(viewsets.ModelViewSet):
 
         serialized_games = self.get_serializer(games, many=True).data
         return Response(data=serialized_games)
+
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
