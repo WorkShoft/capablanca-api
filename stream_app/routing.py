@@ -4,5 +4,5 @@ from . import consumers
 
 
 websocket_urlpatterns = [
-    path(r'ws/game/<uuid>/', consumers.GameConsumer),
+    path(r"ws/game/<uuid>/", consumers.GameConsumer),
 ]

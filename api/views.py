@@ -16,8 +16,7 @@ User = get_user_model()
 
 class GameViewSet(viewsets.ModelViewSet):
     serializer_class = GameSerializer
-    queryset = Game.objects.all() \
-                           .order_by("-created_at")
+    queryset = Game.objects.all().order_by("-created_at")
 
     permission_classes = [
         GamePermission,
@@ -28,7 +27,7 @@ class GameViewSet(viewsets.ModelViewSet):
         """
         Move a piece
         """
-        
+
         from_square = request.data.get("from_square")
         to_square = request.data.get("to_square")
 
@@ -76,7 +75,9 @@ class GameViewSet(viewsets.ModelViewSet):
         """
 
         user = self.request.user
-        games = Game.objects.filter(Q(whites_player=user) | Q(blacks_player=user)).order_by("-created_at")
+        games = Game.objects.filter(
+            Q(whites_player=user) | Q(blacks_player=user)
+        ).order_by("-created_at")
 
         page = self.paginate_queryset(games)
         if page is not None:
@@ -85,7 +86,6 @@ class GameViewSet(viewsets.ModelViewSet):
 
         serialized_games = self.get_serializer(games, many=True).data
         return Response(data=serialized_games)
-
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

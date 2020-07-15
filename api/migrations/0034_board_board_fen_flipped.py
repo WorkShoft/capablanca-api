@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0033_auto_20200625_1202'),
+        ("api", "0033_auto_20200625_1202"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='board',
-            name='board_fen_flipped',
-            field=models.TextField(default='RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr'),
+            model_name="board",
+            name="board_fen_flipped",
+            field=models.TextField(
+                default="RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr"
+            ),
         ),
     ]
