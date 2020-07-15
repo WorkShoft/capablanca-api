@@ -125,10 +125,13 @@ class Board(Model):
         for i in attributes:
             setattr(self, i, getattr(chess_board, i))
 
+        chess_board_flip_vert = chess_board.transform(chess.flip_vertical)
+        chess_board_flip = chess_board_flip_vert.transform(chess.flip_horizontal)
+
         self.castling_rights = str(chess_board.castling_rights)
         self.fen = chess_board.fen()
         self.board_fen = chess_board.board_fen()
-        self.board_fen_flipped = chess_board.transform(chess.flip_vertical).board_fen()
+        self.board_fen_flipped = chess_board_flip.board_fen()
         self.castling_xfen = chess_board.castling_xfen()
 
         self.save()
