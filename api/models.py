@@ -24,7 +24,7 @@ class Elo(Model):
     """
 
     rating = IntegerField(default=1200)
-    k_factor = IntegerField(default=32)
+    previous_rating = IntegerField(default=1200)
     wins = IntegerField(default=0)
     losses = IntegerField(default=0)
     draws = IntegerField(default=0)
@@ -32,6 +32,12 @@ class Elo(Model):
 
     player = AutoOneToOneField(settings.AUTH_USER_MODEL,
                                on_delete=CASCADE, null=True, related_name="elo")
+
+    def update_rating(self, new_rating):
+        self.previous_rating = self.rating
+        self.rating = new_rating
+
+        self.save()
 
 
 class Result(Model):
