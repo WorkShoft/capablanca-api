@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0038_remove_elo_k_factor'),
+        ("api", "0038_remove_elo_k_factor"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='elo',
-            name='previous_rating',
+            model_name="elo",
+            name="previous_rating",
             field=models.IntegerField(default=1200),
         ),
     ]

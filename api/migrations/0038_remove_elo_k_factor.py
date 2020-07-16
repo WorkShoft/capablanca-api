@@ -6,12 +6,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0037_auto_20200716_1115'),
+        ("api", "0037_auto_20200716_1115"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='elo',
-            name='k_factor',
-        ),
+        migrations.RemoveField(model_name="elo", name="k_factor",),
     ]
