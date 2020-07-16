@@ -5,6 +5,12 @@ tidyup:
 	find . -name "*~" -type f -delete
 
 test:
+	pytest api/tests/
+
+testpudb:
+	pytest api/tests/ --pudb
+
+testreport:
 	pytest --cov-report html:docs/api_coverage --cov=api api/tests/
 
 erdiagram:
