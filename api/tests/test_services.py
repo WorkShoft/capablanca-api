@@ -2,7 +2,26 @@ import chess
 import chess.pgn
 import pytest
 from api import services
-from api.models import Board
+from api.models import Board, Game, Result
+from unittest import mock
+
+
+@pytest.fixture
+def users():
+    user_one = services.User.objects.create(
+        username="walterwhite",
+        name="Walter Hartwell White",
+        email="walter@graymatter.tech",
+        password="albuquerque1992",
+    )
+    user_two = services.User.objects.create(
+        username="jessepinkman",
+        name="Jesse Bruce Pinkman",
+        email="jesseyo@outlook.com",
+        password="therealog",
+    )
+
+    return user_one, user_two
 
 
 @pytest.mark.django_db
@@ -57,3 +76,65 @@ def test_create_board_from_pgn_starting_at():
 
     assert board_instance.fullmove_number == 3
     assert chess_board.is_checkmate()
+
+
+@pytest.mark.django_db
+def test_get_expected_score():
+    player_rating = 1200
+    opponent_rating = 1300
+
+    expected_player_score = services._get_expected_score(player_rating, opponent_rating)
+
+    expected_opponent_score = services._get_expected_score(
+        opponent_rating, player_rating
+    )
+
+    assert expected_player_score == 0.36
+    assert expected_opponent_score == 0.64
+
+
+@pytest.mark.django_db
+@mock.patch("api.services.K_FACTOR", 32)
+def test_get_rating(users):
+    player, opponent = users
+
+    rating = services.get_rating(1, player.elo.rating, opponent.elo.rating)
+
+    assert rating == 1216
+
+
+@pytest.mark.django_db
+@mock.patch("api.services.K_FACTOR", 32)
+def test_update_elo_rating(users):
+    player, opponent = users
+
+    new_rating = services.update_elo_rating(
+        player_score=1, player=player, opponent=opponent
+    )
+
+    assert new_rating == 1216
+    assert player.elo.rating == 1216
+
+
+@pytest.mark.django_db
+def test_update_elo(users):
+    player, opponent = users
+
+    board_instance, chess_board = services.create_board_from_pgn(
+        "api/pgn_games/fools_mate.pgn", starting_at=4
+    )
+
+    game = Game(
+        board=board_instance,
+        whites_player=player,
+        blacks_player=opponent,
+        result=Result(result=Result.BLACK_WINS, termination=Result.NORMAL),
+    )
+
+    services.update_elo(game)
+
+    assert player.elo.wins == 0
+    assert opponent.elo.wins == 1
+
+    assert player.elo.rating == 1184
+    assert opponent.elo.rating == 1216
