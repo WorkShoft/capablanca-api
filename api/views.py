@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from . import services
 from .models import Game
 from .permissions import GamePermission
-from .serializers import GameSerializer, CustomTokenObtainPairSerializer
+from .serializers import CustomTokenObtainPairSerializer, GameSerializer
 
 User = get_user_model()
 

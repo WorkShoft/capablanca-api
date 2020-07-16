@@ -1,9 +1,9 @@
 import json
+
+from api.models import Game
+from api.serializers import GameSerializer
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-
-from api.serializers import GameSerializer
-from api.models import Game
 
 
 class GameConsumer(WebsocketConsumer):

@@ -1,11 +1,8 @@
 import chess.pgn
-
-from django.contrib.auth import get_user_model
-from rest_framework.test import APIRequestFactory, force_authenticate, APITestCase
-
-from api.views import GameViewSet
 from api.models import Game, Result
-
+from api.views import GameViewSet
+from django.contrib.auth import get_user_model
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 factory = APIRequestFactory()
 

@@ -1,7 +1,6 @@
+import stream_app.routing
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-import stream_app.routing
-
 
 application = ProtocolTypeRouter(
     {

@@ -1,7 +1,6 @@
 import chess
 import chess.pgn
 import pytest
-
 from api import services
 from api.models import Board
 
