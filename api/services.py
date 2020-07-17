@@ -8,6 +8,7 @@ from django.utils import timezone
 from .constants import K_FACTOR
 from .models import Board, Game, Move, Result
 
+
 RESULTS_DICT = {
     "1-0": Result.WHITE_WINS,
     "1/2-1/2": Result.DRAW,
@@ -16,6 +17,8 @@ RESULTS_DICT = {
 
 User = get_user_model()
 
+
+# Game
 
 def is_game_over(game_instance):
     """
@@ -27,9 +30,31 @@ def is_game_over(game_instance):
 
     if chess_board.is_game_over():
         finish_game(game_instance, chess_board)
+        update_elo(game_instance)
         return True
 
     return False
+
+
+def create_game(result_data=None, board_data=None, **validated_data):
+    game_uuid = uuid.uuid4()
+
+    chess_game = chess.Board()
+
+    board_object = Board.objects.create(
+        **board_data,
+        fen=chess.STARTING_FEN,
+        castling_rights=chess_game.castling_rights,
+        game_uuid=game_uuid,
+    )
+
+    result_object = Result.objects.create(**result_data)
+
+    game = Game.objects.create(
+        result=result_object, board=board_object, uuid=game_uuid, **validated_data
+    )
+
+    return game
 
 
 def finish_game(game_instance, chess_board):
@@ -71,7 +96,6 @@ def assign_color(game_instance, username, preferred_color="white"):
 
 
 # Board
-
 
 def move_piece(board_instance, from_square, to_square, chess_board=None):
     """
@@ -133,16 +157,17 @@ def create_board_from_pgn(pgn_file, starting_at=0):
         board_instance.save()
 
         if starting_at:
-            move_ucis = [i.move.uci() for i in chess_game.mainline()][:starting_at]
+            move_ucis = [i.move.uci()
+                         for i in chess_game.mainline()][:starting_at]
 
             for u in move_ucis:
-                move_piece(board_instance, u[:2], u[2:], chess_board=chess_board)
+                move_piece(board_instance, u[:2],
+                           u[2:], chess_board=chess_board)
 
     return (board_instance, chess_board)
 
 
-# ELO
-
+# Elo
 
 def _get_expected_score(player_rating, opponent_rating):
     """
@@ -185,7 +210,8 @@ def update_elo_rating(player_score=None, player=None, opponent=None, previous=Fa
         opponent_rating = (
             opponent.elo.rating if previous is False else opponent.elo.previous_rating
         )
-        new_rating = get_rating(player_score, player.elo.rating, opponent_rating)
+        new_rating = get_rating(
+            player_score, player.elo.rating, opponent_rating)
 
         player.elo.update_rating(new_rating)
 
@@ -227,34 +253,11 @@ def update_elo(game_instance):
     white.elo.save()
     black.elo.save()
 
-    update_elo_rating(player_score=scores["white"], player=white, opponent=black)
+    update_elo_rating(
+        player_score=scores["white"], player=white, opponent=black)
 
     update_elo_rating(
         player_score=scores["black"], player=black, opponent=white, previous=True
     )
 
     return white.elo, black.elo
-
-
-# GAME
-
-
-def create_game(result_data=None, board_data=None, **validated_data):
-    game_uuid = uuid.uuid4()
-
-    chess_game = chess.Board()
-
-    board_object = Board.objects.create(
-        **board_data,
-        fen=chess.STARTING_FEN,
-        castling_rights=chess_game.castling_rights,
-        game_uuid=game_uuid,
-    )
-
-    result_object = Result.objects.create(**result_data)
-
-    game = Game.objects.create(
-        result=result_object, board=board_object, uuid=game_uuid, **validated_data
-    )
-
-    return game
