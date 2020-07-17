@@ -3,15 +3,31 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from . import services
-from .models import Board, Game, Result
+from .models import Board, Elo, Game, Result
+
+
+class EloSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Elo
+        fields = (
+            "rating",
+            "previous_rating",
+            "wins",
+            "losses",
+            "draws",
+            "uuid",
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):
+    elo = EloSerializer()
+
     class Meta:
         model = get_user_model()
         fields = (
             "username",
             "active",
+            "elo",
         )
 
 

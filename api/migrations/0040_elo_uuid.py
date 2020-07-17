@@ -7,13 +7,11 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0039_elo_previous_rating'),
+        ("api", "0039_elo_previous_rating"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='elo',
-            name='uuid',
-            field=models.UUIDField(default=uuid.uuid4),
+            model_name="elo", name="uuid", field=models.UUIDField(default=uuid.uuid4),
         ),
     ]
