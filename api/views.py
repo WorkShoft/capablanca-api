@@ -1,15 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from . import services
-from .models import Game
+from .models import Elo, Game
 from .permissions import GamePermission
-from .serializers import CustomTokenObtainPairSerializer, GameSerializer
+from .serializers import CustomTokenObtainPairSerializer, EloSerializer, GameSerializer
 
 User = get_user_model()
 
@@ -86,6 +86,14 @@ class GameViewSet(viewsets.ModelViewSet):
 
         serialized_games = self.get_serializer(games, many=True).data
         return Response(data=serialized_games)
+
+
+class EloViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    queryset = Elo.objects.all()
+    serializer_class = EloSerializer
+    lookup_field = "uuid"
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
