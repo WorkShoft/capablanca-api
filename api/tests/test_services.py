@@ -1,9 +1,10 @@
+from unittest import mock
+
 import chess
 import chess.pgn
 import pytest
 from api import services
 from api.models import Board, Game, Result
-from unittest import mock
 
 
 @pytest.fixture
@@ -120,7 +121,7 @@ def test_update_elo_rating(users):
 def test_update_elo(users):
     player, opponent = users
 
-    board_instance, chess_board = services.create_board_from_pgn(
+    board_instance, _ = services.create_board_from_pgn(
         "api/pgn_games/fools_mate.pgn", starting_at=4
     )
 
