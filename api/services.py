@@ -28,12 +28,7 @@ def is_game_over(game_instance):
 
     chess_board = chess_board_from_uuid(game_instance.uuid)
 
-    if chess_board.is_game_over():
-        finish_game(game_instance, chess_board)
-        update_elo(game_instance)
-        return True
-
-    return False
+    return chess_board.is_game_over()
 
 
 def create_game(result_data=None, board_data=None, **validated_data):
@@ -117,7 +112,9 @@ def move_piece(board_instance, from_square, to_square, chess_board=None):
         board_instance.update(chess_board)
 
         if hasattr(board_instance, "game"):
-            is_game_over(board_instance.game)
+            if is_game_over(board_instance.game):
+                finish_game(board_instance.game, chess_board)
+                update_elo(board_instance.game)
 
         return requested_move
 
