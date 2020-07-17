@@ -28,6 +28,7 @@ class Elo(Model):
     losses = IntegerField(default=0)
     draws = IntegerField(default=0)
     updated_at = DateTimeField(auto_now=True)
+    uuid = UUIDField(default=uuid.uuid4)
 
     player = AutoOneToOneField(
         settings.AUTH_USER_MODEL, on_delete=CASCADE, null=True, related_name="elo"
@@ -106,9 +107,12 @@ class Board(Model):
     BLACK_PIECES = ["q", "k", "b", "n", "r", "p"]
     WHITE_PIECES = [p.upper() for p in BLACK_PIECES]
 
-    fen = TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-    board_fen = TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
-    board_fen_flipped = TextField(default="RNBKQBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbkqbnr")
+    fen = TextField(
+        default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    board_fen = TextField(
+        default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+    board_fen_flipped = TextField(
+        default="RNBKQBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbkqbnr")
     ep_square = IntegerField(null=True)
     castling_xfen = TextField(null=True)
     castling_rights = TextField(null=True)
@@ -135,7 +139,8 @@ class Board(Model):
             setattr(self, i, getattr(chess_board, i))
 
         chess_board_flip_vert = chess_board.transform(chess.flip_vertical)
-        chess_board_rotated = chess_board_flip_vert.transform(chess.flip_horizontal)
+        chess_board_rotated = chess_board_flip_vert.transform(
+            chess.flip_horizontal)
 
         self.castling_rights = str(chess_board.castling_rights)
         self.fen = chess_board.fen()
