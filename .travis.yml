@@ -4,5 +4,10 @@ python:
 install:
   - pip install -r requirements/base.txt
   - pip install -r requirements/local.txt
+services:
+  - postgresql
+before_script:
+  psql -c "create database chess_api_project;" -U postgres
 script:
   - make test
+  
