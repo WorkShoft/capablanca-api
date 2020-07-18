@@ -3,18 +3,18 @@ Django Chess API
 
 Django Chess API for python-chess
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-     :target: https://github.com/ambv/black
-     :alt: Black code style
 .. image:: https://api.travis-ci.com/WorkShoft/capablanca-api.svg?branch=master&status=passed
      :target: https://travis-ci.com/github/WorkShoft/capablanca-api
      :alt: TravisCI build status
 .. image:: https://coveralls.io/repos/github/WorkShoft/capablanca-api/badge.svg?branch=travis-coveralls
      :target: https://coveralls.io/github/WorkShoft/capablanca-api?branch=travis-coveralls
      :alt: Coverage status
+.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
+     :target: https://github.com/pydanny/cookiecutter-django/
+     :alt: Built with Cookiecutter Django
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+     :target: https://github.com/ambv/black
+     :alt: Black code style	   
 
 
 :License: Apache Software License 2.0
