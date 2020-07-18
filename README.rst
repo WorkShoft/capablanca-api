@@ -1,7 +1,7 @@
-Django Chess API
-================
+Capablanca Chess API
+====================
 
-Django Chess API for python-chess
+Django Chess API powered by python-chess
 
 .. image:: https://api.travis-ci.com/WorkShoft/capablanca-api.svg?branch=master&status=passed
      :target: https://travis-ci.com/github/WorkShoft/capablanca-api
