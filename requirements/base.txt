@@ -6,6 +6,7 @@ whitenoise==5.0.1  # https://github.com/evansd/whitenoise
 redis==3.5.0  # https://github.com/andymccurdy/redis-py
 hiredis==1.0.1  # https://github.com/redis/hiredis-py
 python-chess==0.31.2
+coveralls==2.1.1
 
 # Django
 # ------------------------------------------------------------------------------
