@@ -13,6 +13,10 @@ testpudb:
 testreport:
 	pytest --cov-report html:docs/api_coverage --cov=api api/tests/
 
+coveralls:
+	coverage run -m pytest api/tests/
+	coveralls
+
 erdiagram:
 	eralchemy -i postgres:///chess_api_project -o docs/chess_api.pdf
 
