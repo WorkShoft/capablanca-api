@@ -9,7 +9,9 @@ Django Chess API for python-chess
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
      :target: https://github.com/ambv/black
      :alt: Black code style
-   [![Coverage Status](https://coveralls.io/repos/github/WorkShoft/capablanca-api/badge.svg?branch=travis-coveralls)](https://coveralls.io/github/WorkShoft/capablanca-api?branch=travis-coveralls)
+.. image:: https://coveralls.io/repos/github/WorkShoft/capablanca-api/badge.svg?branch=travis-coveralls
+     :target: https://coveralls.io/github/WorkShoft/capablanca-api?branch=travis-coveralls
+     :alt: Coverage status
 
 
 :License: Apache Software License 2.0
