@@ -6,8 +6,8 @@ Django Chess API powered by python-chess
 .. image:: https://api.travis-ci.com/WorkShoft/capablanca-api.svg?branch=master&status=passed
      :target: https://travis-ci.com/github/WorkShoft/capablanca-api
      :alt: TravisCI build status
-.. image:: https://coveralls.io/repos/github/WorkShoft/capablanca-api/badge.svg?branch=travis-coveralls
-     :target: https://coveralls.io/github/WorkShoft/capablanca-api?branch=travis-coveralls
+.. image:: https://coveralls.io/repos/github/WorkShoft/capablanca-api/badge.svg?branch=master
+     :target: https://coveralls.io/github/WorkShoft/capablanca-api?branch=master
      :alt: Coverage status
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
