@@ -1,5 +1,5 @@
 tidyup:	
-	autoflake --recursive . --remove-all-unused-imports --in-place
+	autoflake --recursive . --remove-all-unused-imports --remove-unused-variables --in-place 
 	isort **/*.py
 	black .
 	find . -name "*~" -type f -delete
