@@ -6,7 +6,7 @@ import pytest
 from api import services
 from api.models import Board, Game, Result
 
-from fixtures import users
+from fixtures import users, game_instance
 
 
 @pytest.mark.django_db
@@ -104,6 +104,11 @@ def test_update_elo_rating(users):
 
 @pytest.mark.django_db
 def test_update_elo(users):
+    """
+    Test ELO is recalculated correctly
+    The default result is Result(result=Result.WHITE_WINS, termination=Result.NORMAL)
+    """
+
     player, opponent = users
 
     board_instance, _ = services.create_board_from_pgn(
@@ -124,3 +129,39 @@ def test_update_elo(users):
 
     assert player.elo.rating == 1184
     assert opponent.elo.rating == 1216
+
+
+@pytest.mark.django_db
+def test_update_elo_draw(users, game_instance):
+    """
+    game.result = Result(result=Result.DRAW, termination=Result.NORMAL)
+    """
+
+    player, opponent = users
+    game = game_instance
+
+    game.result = Result(result=Result.DRAW)
+    game.result.save()
+
+    services.update_elo(game)
+
+    assert player.elo.draws == 1
+    assert opponent.elo.draws == 1
+
+
+@pytest.mark.django_db
+def test_update_elo_white_wins(users, game_instance):
+    """
+    game.result = Result(result=Result.WHITE_WINS, termination=Result.NORMAL)
+    """
+
+    player, opponent = users
+    game = game_instance
+
+    game.result = Result(result=Result.WHITE_WINS)
+    game.result.save()
+
+    services.update_elo(game)
+
+    assert player.elo.wins == 1
+    assert opponent.elo.wins == 0
