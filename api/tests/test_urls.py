@@ -1,2 +1,2 @@
 def test_url_sanity_check():
-    pass
+    import api.urls
