@@ -24,10 +24,7 @@ class GamePermission(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        elif not request.user.is_authenticated:
-            return False
-
-        elif view.action == "move":
+        if view.action == "move":
             from_square = request.data.get("from_square")
             square = getattr(chess, from_square.upper())
             board = chess.Board(obj.board.fen)
@@ -46,5 +43,4 @@ class GamePermission(permissions.BasePermission):
 
             return player_color == piece_color
 
-        else:
-            return True
+        return True
