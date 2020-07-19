@@ -80,12 +80,13 @@ class GameViewSet(viewsets.ModelViewSet):
         ).order_by("-created_at")
 
         page = self.paginate_queryset(games)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        serialized_games = self.get_serializer(page, many=True).data
 
-        serialized_games = self.get_serializer(games, many=True).data
-        return Response(data=serialized_games)
+        return (
+            self.get_paginated_response(serialized_games)
+            if page
+            else Response(data=serialized_games)
+        )
 
 
 class EloViewSet(
