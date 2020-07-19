@@ -14,7 +14,7 @@ testreport:
 	pytest --cov-report html:docs/api_coverage --cov=api api/tests/
 
 coveralls:
-	coverage run -m pytest api/tests/
+	coverage run --source api -m pytest api/tests/
 	coveralls
 
 erdiagram:
