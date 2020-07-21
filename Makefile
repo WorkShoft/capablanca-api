@@ -5,16 +5,16 @@ tidyup:
 	find . -name "*~" -type f -delete
 
 test:
-	pytest api/tests/
+	pytest api/tests stream_app/tests --cov=api --cov stream_app
 
 testpudb:
 	pytest api/tests/ --pudb
 
 testreport:
-	pytest --cov-report html:docs/api_coverage --cov=api api/tests/
+	pytest --cov-report html:docs/api_coverage --cov=api --cov stream_app api/tests stream_app/tests
 
 coveralls:
-	coverage run --source api -m pytest api/tests/
+	coverage run --source api,stream_app -m pytest api/tests
 	coveralls
 
 erdiagram:
