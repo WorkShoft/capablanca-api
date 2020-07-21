@@ -26,7 +26,7 @@ urlpatterns = [
             title="Chess API",
             description="Multiplayer Chess API",
             version="0.2.0",
-            urlconf="api.urls",
+            urlconf="config.api_router",
         ),
         name="openapi-schema",
     ),
@@ -37,7 +37,8 @@ urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
     # Simple JWT
-    path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/", CustomTokenObtainPairView.as_view(),
+         name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
@@ -69,4 +70,5 @@ if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
 
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+        urlpatterns = [
+            path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
