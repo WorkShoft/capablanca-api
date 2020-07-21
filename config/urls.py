@@ -1,13 +1,26 @@
 from api.views import CustomTokenObtainPairView
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework.schemas import get_schema_view
 from rest_framework_simplejwt.views import TokenRefreshView
+
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Capablanca API",
+        description="Multiplayer Chess API",
+        default_version="0.2.0",
+        urlconf="config.api_router",),
+)
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -22,12 +35,7 @@ urlpatterns = [
     # OpenAPI
     path(
         "docs/",
-        get_schema_view(
-            title="Chess API",
-            description="Multiplayer Chess API",
-            version="0.2.0",
-            urlconf="config.api_router",
-        ),
+        schema_view.with_ui('swagger', cache_timeout=0),
         name="openapi-schema",
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

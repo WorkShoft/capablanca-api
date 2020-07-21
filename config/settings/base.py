@@ -3,7 +3,8 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 
-import environ, datetime
+import environ
+import datetime
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # chess_api_project/
@@ -83,6 +84,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [
@@ -269,7 +271,8 @@ LOGGING = {
 
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+ACCOUNT_ALLOW_REGISTRATION = env.bool(
+    "DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -316,6 +319,6 @@ ASGI_APPLICATION = "config.routing.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [("127.0.0.1", 6379)],},
+        "CONFIG": {"hosts": [("127.0.0.1", 6379)], },
     },
 }

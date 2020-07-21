@@ -19,7 +19,7 @@ class EloSerializer(serializers.ModelSerializer):
         )
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserEloSerializer(serializers.ModelSerializer):
     elo = EloSerializer()
 
     class Meta:
@@ -53,8 +53,8 @@ class ResultSerializer(serializers.ModelSerializer):
 
 
 class GameSerializer(serializers.ModelSerializer):
-    black_player = UserSerializer(required=False)
-    white_player = UserSerializer(required=False)
+    black_player = UserEloSerializer(required=False)
+    white_player = UserEloSerializer(required=False)
     board = BoardSerializer(required=False)
     result = ResultSerializer(required=False)
 
@@ -75,7 +75,8 @@ class GameSerializer(serializers.ModelSerializer):
         result_data = validated_data.pop("result", {})
         board_data = validated_data.pop("board", {})
 
-        preferred_color = self.context["request"].data.get("preferred_color", "random")
+        preferred_color = self.context["request"].data.get(
+            "preferred_color", "random")
 
         auth_username = self.context["request"].user
 

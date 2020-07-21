@@ -21,5 +21,6 @@ django-annoying==0.10.6
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 djangorestframework-simplejwt==4.4.0
 django-cors-headers==3.4.0
+drf-yasg==1.17.1 
 # Django Channels
 channels-redis==3.0.0
