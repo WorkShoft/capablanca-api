@@ -5,7 +5,7 @@ from api.serializers import CustomTokenObtainPairSerializer
 
 from unittest.mock import MagicMock
 
-from fixtures import users, JWT_TOKEN
+from fixtures import JWT_TOKEN, users
 
 
 TokenObtainPairSerializer.validate = MagicMock(return_value=JWT_TOKEN)

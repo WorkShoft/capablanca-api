@@ -5,7 +5,6 @@ import chess.pgn
 import pytest
 from api import services
 from api.models import Board, Game, Result
-
 from fixtures import users, game_instance
 
 

@@ -19,8 +19,6 @@ urlpatterns = [
     # User management
     path("users/", include("chess_api_project.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # custom urls
-    path("chess/", include("api.urls")),
     # OpenAPI
     path(
         "docs/",

@@ -9,26 +9,30 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0040_elo_uuid'),
+        ("api", "0040_elo_uuid"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='game',
-            name='blacks_player',
-        ),
-        migrations.RemoveField(
-            model_name='game',
-            name='whites_player',
+        migrations.RemoveField(model_name="game", name="blacks_player",),
+        migrations.RemoveField(model_name="game", name="whites_player",),
+        migrations.AddField(
+            model_name="game",
+            name="black_player",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="black_player",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='game',
-            name='black_player',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='black_player', to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='game',
-            name='white_player',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='white_player', to=settings.AUTH_USER_MODEL),
+            model_name="game",
+            name="white_player",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="white_player",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

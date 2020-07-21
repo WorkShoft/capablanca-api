@@ -17,13 +17,13 @@ class TestAPI(APITestCase):
             username="blackie_lawless", password="django"
         )
 
-        self.game_create_view = GameViewSet.as_view({"post": "create", })
-        self.game_list_view = GameViewSet.as_view({"get": "list", })
-        self.game_detail_view = GameViewSet.as_view({"get": "retrieve", })
-        self.join_game_view = GameViewSet.as_view({"put": "join", })
-        self.move_piece_view = GameViewSet.as_view({"put": "move", })
+        self.game_create_view = GameViewSet.as_view({"post": "create",})
+        self.game_list_view = GameViewSet.as_view({"get": "list",})
+        self.game_detail_view = GameViewSet.as_view({"get": "retrieve",})
+        self.join_game_view = GameViewSet.as_view({"put": "join",})
+        self.move_piece_view = GameViewSet.as_view({"put": "move",})
         self.unfinished_game_view = GameViewSet.as_view(
-            {"get": "get_unfinished_games", }
+            {"get": "get_unfinished_games",}
         )
 
     def _create_game(self, preferred_color="random"):
@@ -34,7 +34,7 @@ class TestAPI(APITestCase):
         return self.game_create_view(request)
 
     def _get_game(self, uuid, user):
-        get_request = factory.get(f"/chess/game/{uuid}/")
+        get_request = factory.get(f"/api/game/{uuid}/")
         force_authenticate(get_request, user=user)
 
         return self.game_detail_view(get_request, pk=uuid)
@@ -44,21 +44,21 @@ class TestAPI(APITestCase):
             "preferred_color": preferred_color,
         }
 
-        join_request = factory.put(f"/chess/game/{uuid}/join/", data)
+        join_request = factory.put(f"/api/game/{uuid}/join/", data)
         force_authenticate(join_request, user=user)
         response = self.join_game_view(join_request, pk=uuid)
 
         return response
 
     def _move_piece(self, uuid, move, user):
-        request = factory.put(f"/chess/game/{uuid}/move/", move)
+        request = factory.put(f"/api/game/{uuid}/move/", move)
         force_authenticate(request, user=user)
         response = self.move_piece_view(request, pk=uuid)
 
         return response
 
     def _get_unfinished_games(self, user):
-        request = factory.get("/chess/game/")
+        request = factory.get("/api/game/")
         force_authenticate(request, user=user)
         response = self.unfinished_game_view(request)
 
@@ -80,11 +80,9 @@ class TestAPI(APITestCase):
 
         game_response = self._create_game()
 
-        get_response = self._get_game(
-            game_response.data.get("uuid"), self.user_one)
+        get_response = self._get_game(game_response.data.get("uuid"), self.user_one)
 
-        self.assertEqual(game_response.data.get("uuid"),
-                         get_response.data.get("uuid"))
+        self.assertEqual(game_response.data.get("uuid"), get_response.data.get("uuid"))
 
     def test_can_join_game(self):
         """
@@ -93,8 +91,7 @@ class TestAPI(APITestCase):
 
         game_response = self._create_game(preferred_color="white")
 
-        response = self._join_game(
-            game_response.data.get("uuid"), self.user_two)
+        response = self._join_game(game_response.data.get("uuid"), self.user_two)
 
         self.assertEqual(
             self.user_two.username,
@@ -138,13 +135,11 @@ class TestAPI(APITestCase):
             "to_square": "e5",
         }
 
-        response = self._move_piece(
-            response.data.get("uuid"), move, self.user_one)
+        response = self._move_piece(response.data.get("uuid"), move, self.user_one)
 
         self.assertIn("detail", response.data)
 
-        self.assertEqual("That move is not valid or allowed",
-                         response.data["detail"])
+        self.assertEqual("That move is not valid or allowed", response.data["detail"])
 
     def test_only_valid_moves_are_allowed(self):
         response = self._create_game(preferred_color="white")
@@ -155,8 +150,7 @@ class TestAPI(APITestCase):
             "to_square": "e6",
         }
 
-        response = self._move_piece(
-            response.data.get("uuid"), move, self.user_one)
+        response = self._move_piece(response.data.get("uuid"), move, self.user_one)
 
         self.assertIn("detail", response.data)
         self.assertEqual(
@@ -175,12 +169,10 @@ class TestAPI(APITestCase):
             "to_square": "e7",
         }
 
-        response = self._move_piece(
-            response.data.get("uuid"), move, self.user_two)
+        response = self._move_piece(response.data.get("uuid"), move, self.user_two)
 
         self.assertIn("detail", response.data)
-        self.assertEqual("That move is not valid or allowed",
-                         response.data["detail"])
+        self.assertEqual("That move is not valid or allowed", response.data["detail"])
 
     def test_users_can_move_against_themselves(self):
         # Create game
@@ -195,8 +187,7 @@ class TestAPI(APITestCase):
             "to_square": "e4",
         }
 
-        move_response = self._move_piece(
-            response.data.get("uuid"), move, self.user_one)
+        move_response = self._move_piece(response.data.get("uuid"), move, self.user_one)
 
         self.assertEqual(game_uuid, move_response.data.get("uuid"))
 
@@ -240,6 +231,5 @@ class TestAPI(APITestCase):
         response = self._get_unfinished_games(self.user_one)
 
         self.assertEqual(
-            game_response.data.get("uuid"), response.data.get(
-                "results")[0].get("uuid")
+            game_response.data.get("uuid"), response.data.get("results")[0].get("uuid")
         )
