@@ -14,7 +14,7 @@ testreport:
 	pytest --cov-report html:docs/api_coverage --cov=api --cov stream_app api/tests stream_app/tests
 
 coveralls:
-	coverage run --source api,stream_app -m pytest api/tests
+	coverage run --source api,stream_app -m pytest api/tests stream_app/tests
 	coveralls
 
 erdiagram:
