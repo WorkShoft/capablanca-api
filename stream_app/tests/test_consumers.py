@@ -1,4 +1,3 @@
-import channels.layers
 import pytest
 import json
 
@@ -8,7 +7,6 @@ from unittest import mock
 from channels.testing import WebsocketCommunicator
 from stream_app.consumers import GameConsumer
 
-from stream_app import services
 
 from api.models import Game
 

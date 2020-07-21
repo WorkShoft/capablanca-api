@@ -1,6 +1,5 @@
 import json
 
-from api.models import Game
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
