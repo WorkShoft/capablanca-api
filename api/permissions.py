@@ -30,11 +30,11 @@ class GamePermission(permissions.BasePermission):
             board = chess.Board(obj.board.fen)
             user = User.objects.get(username=request.user)
 
-            if user in (obj.whites_player, obj.blacks_player):
-                if obj.whites_player == obj.blacks_player:
+            if user in (obj.white_player, obj.black_player):
+                if obj.white_player == obj.black_player:
                     return True
 
-                player_color = "white" if user == obj.whites_player else "black"
+                player_color = "white" if user == obj.white_player else "black"
 
             else:
                 return False

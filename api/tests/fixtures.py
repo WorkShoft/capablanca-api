@@ -41,7 +41,7 @@ def game_instance(users):
 
     return Game(
         board=BOARD_INSTANCE,
-        whites_player=player,
-        blacks_player=opponent,
+        white_player=player,
+        black_player=opponent,
         result=Result(result=Result.BLACK_WINS, termination=Result.NORMAL),
     )

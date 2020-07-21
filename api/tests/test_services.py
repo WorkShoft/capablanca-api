@@ -117,8 +117,8 @@ def test_update_elo(users):
 
     game = Game(
         board=board_instance,
-        whites_player=player,
-        blacks_player=opponent,
+        white_player=player,
+        black_player=opponent,
         result=Result(result=Result.BLACK_WINS, termination=Result.NORMAL),
     )
 

@@ -53,8 +53,8 @@ class ResultSerializer(serializers.ModelSerializer):
 
 
 class GameSerializer(serializers.ModelSerializer):
-    blacks_player = UserSerializer(required=False)
-    whites_player = UserSerializer(required=False)
+    black_player = UserSerializer(required=False)
+    white_player = UserSerializer(required=False)
     board = BoardSerializer(required=False)
     result = ResultSerializer(required=False)
 
@@ -62,8 +62,8 @@ class GameSerializer(serializers.ModelSerializer):
         model = Game
         fields = (
             "uuid",
-            "blacks_player",
-            "whites_player",
+            "black_player",
+            "white_player",
             "created_at",
             "started_at",
             "finished_at",

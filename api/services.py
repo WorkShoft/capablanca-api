@@ -65,13 +65,13 @@ def finish_game(game_instance, chess_board):
 def assign_color(game_instance, username, preferred_color="white"):
     player_color = "white"
 
-    if game_instance.whites_player and game_instance.blacks_player:
+    if game_instance.white_player and game_instance.black_player:
         return "full"
 
-    if game_instance.whites_player or game_instance.blacks_player:
-        player_color = "white" if game_instance.blacks_player else "black"
+    if game_instance.white_player or game_instance.black_player:
+        player_color = "white" if game_instance.black_player else "black"
 
-    elif not game_instance.whites_player and not game_instance.blacks_player:
+    elif not game_instance.white_player and not game_instance.black_player:
         player_color = preferred_color
 
         if preferred_color == "random":
@@ -80,10 +80,10 @@ def assign_color(game_instance, username, preferred_color="white"):
     auth_user = User.objects.get(username=username)
 
     if player_color == "black":
-        game_instance.blacks_player = auth_user
+        game_instance.black_player = auth_user
 
     else:
-        game_instance.whites_player = auth_user
+        game_instance.white_player = auth_user
 
     game_instance.save()
 
@@ -220,8 +220,8 @@ def update_elo(game_instance):
     Returns: white_elo, black_elo
     """
 
-    white = game_instance.whites_player
-    black = game_instance.blacks_player
+    white = game_instance.white_player
+    black = game_instance.black_player
 
     scores = {
         "white": 0,

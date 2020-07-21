@@ -98,7 +98,7 @@ class TestAPI(APITestCase):
 
         self.assertEqual(
             self.user_two.username,
-            response.data.get("blacks_player", {}).get("username"),
+            response.data.get("black_player", {}).get("username"),
         )
 
     def test_players_can_move_their_pieces(self):
@@ -114,9 +114,7 @@ class TestAPI(APITestCase):
             "to_square": "e5",
         }
 
-        # First player (whites)
-
-        response_whites = self._move_piece(
+        response_white = self._move_piece(
             response.data.get("uuid"), first_move, self.user_one
         )
 
@@ -124,12 +122,12 @@ class TestAPI(APITestCase):
             response.data.get("uuid"), self.user_two, preferred_color="black"
         )
 
-        response_blacks = self._move_piece(
+        response_black = self._move_piece(
             response.data.get("uuid"), second_move, self.user_two
         )
 
-        self.assertIn("uuid", response_whites.data)
-        self.assertIn("uuid", response_blacks.data)
+        self.assertIn("uuid", response_white.data)
+        self.assertIn("uuid", response_black.data)
 
     def test_players_can_only_move_pieces_they_own(self):
         response = self._create_game(preferred_color="white")
