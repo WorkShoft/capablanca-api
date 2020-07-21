@@ -1,15 +1,65 @@
-def test_connect():
-    pass
+import channels.layers
+import pytest
+import json
 
-def test_receive():
-    pass
+from uuid import uuid4
+from unittest import mock
 
-def test_game_data():
-    pass
+from channels.testing import WebsocketCommunicator
+from stream_app.consumers import GameConsumer
 
-def test_disconnect():
-    pass
+from stream_app import services
 
-def test_get_serialized_game():
-    pass
+from api.models import Game
 
+from stream_app.tests.fixtures import GAME_UUID
+
+
+@pytest.mark.asyncio
+@pytest.fixture
+def url_route():
+    return {
+        "kwargs": {
+                "uuid": str(uuid4()),
+            },
+        }
+
+@pytest.mark.asyncio
+@pytest.fixture
+def game_communicator(url_route):
+    game_uuid = url_route["kwargs"]["uuid"]
+    communicator = WebsocketCommunicator(GameConsumer, f"/ws/game/{game_uuid}/")
+    communicator.scope["url_route"] = url_route
+
+    return communicator
+
+
+@pytest.mark.asyncio
+async def test_connect(game_communicator):
+    connected, _ = await game_communicator.connect()
+    
+    assert connected
+
+    await game_communicator.disconnect()
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_receive(game_communicator):
+    connected, _ = await game_communicator.connect()
+
+    Game.objects.get = mock.MagicMock(return_value=Game(uuid=GAME_UUID))
+
+    await game_communicator.send_to(json.dumps({"update": "foo"}))        
+    received_message = await game_communicator.receive_json_from()
+
+    assert received_message["uuid"] == GAME_UUID
+
+    await game_communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_routing():
+    from stream_app import routing
+
+    assert routing.websocket_urlpatterns is not None
