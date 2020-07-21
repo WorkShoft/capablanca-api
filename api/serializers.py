@@ -75,8 +75,7 @@ class GameSerializer(serializers.ModelSerializer):
         result_data = validated_data.pop("result", {})
         board_data = validated_data.pop("board", {})
 
-        preferred_color = self.context["request"].data.get(
-            "preferred_color", "random")
+        preferred_color = self.context["request"].data.get("preferred_color", "random")
 
         auth_username = self.context["request"].user
 

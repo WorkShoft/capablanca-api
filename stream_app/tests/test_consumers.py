@@ -19,10 +19,9 @@ from stream_app.tests.fixtures import GAME_UUID
 @pytest.fixture
 def url_route():
     return {
-        "kwargs": {
-                "uuid": str(uuid4()),
-            },
-        }
+        "kwargs": {"uuid": str(uuid4()),},
+    }
+
 
 @pytest.mark.asyncio
 @pytest.fixture
@@ -37,7 +36,7 @@ def game_communicator(url_route):
 @pytest.mark.asyncio
 async def test_connect(game_communicator):
     connected, _ = await game_communicator.connect()
-    
+
     assert connected
 
     await game_communicator.disconnect()
@@ -50,7 +49,7 @@ async def test_receive(game_communicator):
 
     Game.objects.get = mock.MagicMock(return_value=Game(uuid=GAME_UUID))
 
-    await game_communicator.send_to(json.dumps({"update": "foo"}))        
+    await game_communicator.send_to(json.dumps({"update": "foo"}))
     received_message = await game_communicator.receive_json_from()
 
     assert received_message["uuid"] == GAME_UUID

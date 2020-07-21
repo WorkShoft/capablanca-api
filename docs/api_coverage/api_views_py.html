@@ -129,7 +129,7 @@
     <p id="t76" class="pln"><span class="n"><a href="#t76">76</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t77" class="run"><span class="n"><a href="#t77">77</a></span><span class="t">        <span class="nam">user</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">request</span><span class="op">.</span><span class="nam">user</span>&nbsp;</span><span class="r"></span></p>
     <p id="t78" class="run"><span class="n"><a href="#t78">78</a></span><span class="t">        <span class="nam">games</span> <span class="op">=</span> <span class="nam">Game</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">filter</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t79" class="pln"><span class="n"><a href="#t79">79</a></span><span class="t">            <span class="nam">Q</span><span class="op">(</span><span class="nam">whites_player</span><span class="op">=</span><span class="nam">user</span><span class="op">)</span> <span class="op">|</span> <span class="nam">Q</span><span class="op">(</span><span class="nam">blacks_player</span><span class="op">=</span><span class="nam">user</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t79" class="pln"><span class="n"><a href="#t79">79</a></span><span class="t">            <span class="nam">Q</span><span class="op">(</span><span class="nam">white_player</span><span class="op">=</span><span class="nam">user</span><span class="op">)</span> <span class="op">|</span> <span class="nam">Q</span><span class="op">(</span><span class="nam">black_player</span><span class="op">=</span><span class="nam">user</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t80" class="pln"><span class="n"><a href="#t80">80</a></span><span class="t">        <span class="op">)</span><span class="op">.</span><span class="nam">order_by</span><span class="op">(</span><span class="str">"-created_at"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t81" class="pln"><span class="n"><a href="#t81">81</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t82" class="run"><span class="n"><a href="#t82">82</a></span><span class="t">        <span class="nam">page</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">paginate_queryset</span><span class="op">(</span><span class="nam">games</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -157,7 +157,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.1</a>,
-            created at 2020-07-19 11:02
+            created at 2020-07-21 20:14
         </p>
     </div>
 </div>

@@ -19,7 +19,8 @@ schema_view = get_schema_view(
         title="Capablanca API",
         description="Multiplayer Chess API",
         default_version="0.2.0",
-        urlconf="config.api_router",),
+        urlconf="config.api_router",
+    ),
 )
 
 urlpatterns = [
@@ -34,9 +35,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # OpenAPI
     path(
-        "docs/",
-        schema_view.with_ui('swagger', cache_timeout=0),
-        name="openapi-schema",
+        "docs/", schema_view.with_ui("swagger", cache_timeout=0), name="openapi-schema",
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
@@ -45,8 +44,7 @@ urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
     # Simple JWT
-    path("api/token/", CustomTokenObtainPairView.as_view(),
-         name="token_obtain_pair"),
+    path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
@@ -78,5 +76,4 @@ if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
 
-        urlpatterns = [
-            path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns

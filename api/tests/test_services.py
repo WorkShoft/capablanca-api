@@ -67,8 +67,7 @@ def test_get_expected_score():
     player_rating = 1200
     opponent_rating = 1300
 
-    expected_player_score = services._get_expected_score(
-        player_rating, opponent_rating)
+    expected_player_score = services._get_expected_score(player_rating, opponent_rating)
 
     expected_opponent_score = services._get_expected_score(
         opponent_rating, player_rating
