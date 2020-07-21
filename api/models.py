@@ -229,16 +229,16 @@ class Piece(Model):
 
 class Game(Model):
     uuid = UUIDField(default=uuid.uuid4, primary_key=True)
-    whites_player = ForeignKey(
+    white_player = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
-        related_name="whites_player",
+        related_name="white_player",
         null=True,
     )
-    blacks_player = ForeignKey(
+    black_player = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
-        related_name="blacks_player",
+        related_name="black_player",
         null=True,
     )
     created_at = DateTimeField(auto_now_add=True)
